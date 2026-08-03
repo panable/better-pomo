@@ -3,14 +3,14 @@
 ![Status](https://img.shields.io/badge/status-under%20construction-orange)
 
 ## Description
-Better Pomodoro is a Pomodoro timer inspired by the implementation used in [Yeolpumta](https://www.yeolpumta.com/en/)
+Better Pomodoro is a Pomodoro timer inspired by the implementation used in [(YPT) Yeolpumta](https://www.yeolpumta.com/en/)
 
 Unlike traditional Pomodoro timers, this version does not force a hard stop when the countdown reaches zero. Instead, the timer continues into a **count-up mode** e.g. (00:00 -> +00:01) allowing you to keep working without interruption while still tracking the extra time spent.
 
 ## Motivation
 Most Pomodoro timers stop immediately when the timer is up (or instantly begins the break timer) - while this is *technically* what Pomodoro is, it breaks flow-state in practice.
 
-After using Yet, I found their approach much more natural:
+After using YPT, I found their approach much more natural:
 - Timer hits `00:00`, it continues counting upward
 - You can finish your current thought, function, or task without disruption.
 - The extra time is still tracked, giving a more accurate representation of the work done.
