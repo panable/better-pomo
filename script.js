@@ -5,21 +5,35 @@ window.onload = () => {
   let button = document.getElementById("button");
   let timer = document.getElementById("timer");
   button.addEventListener("click", startTimer);
-  let secs = 0;
+  timer.addEventListener("click", changePomo);
+
+  let max_pomo_length = 1 * 60 * 1000;
+  let remaining = max_pomo_length;
   let now = null;
   let timer_started = false;
 
-  // Maybe I can use timestamp instead of calculating current?
-  function tick(timestamp) {
-    if (!timer_started) return;
-    current = Date.now() - now;
-    let seconds = Math.floor(current / 1000);
+  function renderTime(millis) {
+    let seconds = Math.ceil(millis / 1000);
     let minutes = Math.floor(seconds / 60);
 
     let visible_seconds = String(seconds % 60).padStart(2, "0");
     let visible_minutes = String(minutes).padStart(2, "0");
 
-    timer.innerHTML = `${visible_minutes}:${visible_seconds}`;
+    return `${visible_minutes}:${visible_seconds}`;
+  }
+
+  function changePomo() {
+  }
+
+  timer.innerHTML = renderTime(remaining);
+
+  function tick() {
+    if (!timer_started) return;
+    // time elapsed since starting the timer
+    current = Date.now() - now;
+
+    remaining = max_pomo_length - current;
+    timer.innerHTML = renderTime(remaining);
     requestAnimationFrame(tick);
   }
 
