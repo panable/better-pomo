@@ -64,6 +64,13 @@ main {
   gap: 2em;
 }
 
+.wrapper2 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2em;
+}
+
 main > * {
   /* min-width: 100%; */
   /* flex-shrink: 100%; */
@@ -71,8 +78,7 @@ main > * {
   flex-basis: 100%;
 }
 
-p {
-  font-size: 1rem;
+p { font-size: 1rem;
   align-self: center;
   text-align: center;
 }
@@ -96,4 +102,38 @@ hr {
     transparent 8px 14px
   );
   margin: 1rem 0;
+}
+
+.hello::before {
+  content: "";
+  width: var(--size);
+  height: var(--size);
+  display: block;
+  position: absolute;
+  border-radius: var(--size);
+  background: linear-gradient(to right, yellow 50%, red 50%);
+}
+
+.hello {
+  --rotation: 0deg;
+  --bg-color: yellow;
+  --fg-color: red;
+  --cntrl-color: var(--bg-color);
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+}
+
+.hello::after {
+  content: "";
+  width: calc(var(--size) / 2);
+  height: var(--size);
+  left: calc(var(--size) / 2);
+  transform-origin: 0px calc(var(--size) / 2);
+  transform: rotate(var(--rotation));
+  position: absolute;
+  display: block;
+  background: var(--cntrl-color);
+  border-top-right-radius: calc(var(--size) / 2);
+  border-bottom-right-radius: calc(var(--size) / 2);
 }

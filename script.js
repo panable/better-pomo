@@ -4,6 +4,12 @@ window.onload = () => {
 
   let button = document.getElementById("button");
   let timer = document.getElementById("timer");
+  let circle = document.getElementById("circle");
+
+  let cs = getComputedStyle(circle);
+  let c_fg = cs.getPropertyValue("--fg-color");
+  let c_bg = cs.getPropertyValue("--bg-color");
+
   button.addEventListener("click", startTimer);
   timer.addEventListener("click", changePomo);
 
@@ -22,18 +28,28 @@ window.onload = () => {
     return `${visible_minutes}:${visible_seconds}`;
   }
 
-  function changePomo() {
-  }
+  function changePomo() {}
 
   timer.innerHTML = renderTime(remaining);
 
   function tick() {
     if (!timer_started) return;
-    // time elapsed since starting the timer
-    current = Date.now() - now;
+    elapsed = Date.now() - now;
 
-    remaining = max_pomo_length - current;
+    remaining = max_pomo_length - elapsed;
     timer.innerHTML = renderTime(remaining);
+
+    let step = 360 / max_pomo_length;
+    deg = step * elapsed;
+    if (deg > 180) deg -= 180;
+    set = (p, v) => {
+      circle.style.setProperty(p, v);
+    };
+    set("--rotation", `${deg}deg`);
+    remaining / max_pomo_length >= 0.5
+      ? set("--cntrl-color", c_bg)
+      : set("--cntrl-color", c_fg);
+
     requestAnimationFrame(tick);
   }
 
