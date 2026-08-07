@@ -1,10 +1,52 @@
 :root {
-  --main-text-color: #E4E4E4;
-  --main-bg-color: #1E1E1E;
-  --main-accent-color: #FFDD33;
-  --marker-color: #FFDD33;
-  --main-link-color: #96A6C8;
+  --main-text-color: #e4e4e4;
+  --main-bg-color: #1e1e1e;
+  --main-accent-color: #ffdd33;
+  --marker-color: #ffdd33;
+  --main-link-color: #96a6c8;
   --alt-bg-color: #282828;
+
+  --apple-red: rgb(255, 56, 60);
+  --apple-orange: rgb(255, 141, 40);
+  --apple-yellow: rgb(255, 204, 0);
+  --apple-green: rgb(52, 199, 89);
+  --apple-mint: rgb(0, 200, 179);
+  --apple-teal: rgb(0, 195, 208);
+  --apple-cyan: rgb(0, 192, 232);
+  --apple-blue: rgb(0, 136, 255);
+  --apple-indigo: rgb(97, 85, 245);
+  --apple-purple: rgb(203, 48, 224);
+  --apple-pink: rgb(255, 45, 85);
+  --apple-brown: rgb(172, 127, 94);
+
+  --gruber-darker-fg: #e4e4ef;
+  --gruber-darker-fgp1: #f4f4ff;
+  --gruber-darker-fgp2: #f5f5f5;
+  --gruber-darker-white: #ffffff;
+  --gruber-darker-black: #000000;
+
+  --gruber-darker-bg-1: #101010;
+  --gruber-darker-bg: #181818;
+  --gruber-darker-bgp1: #282828;
+  --gruber-darker-bgp2: #453d41;
+  --gruber-darker-bgp3: #484848;
+  --gruber-darker-bgp4: #52494e;
+
+  --gruber-darker-red-1: #c73c3f;
+  --gruber-darker-red: #f43841;
+  --gruber-darker-redp1: #ff4f58;
+
+  --gruber-darker-green: #73c936;
+  --gruber-darker-yellow: #ffdd33;
+  --gruber-darker-brown: #cc8c3c;
+
+  --gruber-darker-quartz: #95a99f;
+
+  --gruber-darker-niagara-2: #303540;
+  --gruber-darker-niagara-1: #565f73;
+  --gruber-darker-niagara: #96a6c8;
+
+  --gruber-darker-wisteria: #9e95c7;
 }
 
 html {
@@ -47,7 +89,7 @@ a {
 
 main {
   display: flex;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
   /* justify-content: center; */
   gap: 1rem;
   margin-block-start: 5rem;
@@ -78,7 +120,8 @@ main > * {
   flex-basis: 100%;
 }
 
-p { font-size: 1rem;
+p {
+  font-size: 1rem;
   align-self: center;
   text-align: center;
 }
