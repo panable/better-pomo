@@ -154,13 +154,13 @@ hr {
   display: block;
   position: absolute;
   border-radius: var(--size);
-  background: linear-gradient(to right, yellow 50%, red 50%);
+  background: linear-gradient(to right, yellow 50%, var(--main-bg-color) 50%);
 }
 
 .hello {
   --rotation: 0deg;
   --bg-color: yellow;
-  --fg-color: red;
+  --fg-color: var(--main-bg-color);
   --cntrl-color: var(--bg-color);
   position: relative;
   width: var(--size);
