@@ -87,26 +87,13 @@ a {
   text-decoration: none;
 }
 
-/* main { */
-  /* display: flex; */
-  /* flex-wrap: wrap; */
-  /* overflow: hidden; */
-  /* justify-content: center; */
-  /* gap: 1rem; */
-  /* margin-block-start: 5rem; */
-  /* /* width: 10rem; */ */
-  /* margin-inline: auto; */
-/* min-width: 30rem; */
-/* max-width: 50px; */
-  /* font-size: 1rem; */
-  /* padding: 1rem; */
-  /* outline: 5px solid red; */
-/* } */
-
 .wrapper {
+  padding: 1rem;
   display: flex;
   flex-direction: row;
   gap: 2em;
+  width: 25rem;
+  margin-inline: auto;
 }
 
 .timer-info {
@@ -130,7 +117,7 @@ a {
   flex-direction: row;
   margin-inline: auto;
   /* min-width: 30rem; */
-  max-width: 25rem;
+  width: 25rem;
   gap: 3rem;
 }
 
@@ -143,7 +130,6 @@ a {
 #timer {
   margin: 0;
   font-size: 2rem;
-  text-align: center;
   font-weight: bold;
 }
 
@@ -155,7 +141,6 @@ a {
 p {
   font-size: 1rem;
   align-self: center;
-  text-align: center;
 }
 
 
