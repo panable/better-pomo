@@ -49,6 +49,7 @@
   --gruber-darker-wisteria: #9e95c7;
 }
 
+
 html {
   overflow-x: hidden;
 }
@@ -91,7 +92,7 @@ a {
   padding: 1rem;
   display: flex;
   flex-direction: row;
-  gap: 2em;
+  gap: 1em;
   width: 25rem;
   margin-inline: auto;
 }
@@ -141,6 +142,19 @@ a {
 p {
   font-size: 1rem;
   align-self: center;
+}
+
+.play {
+  width: 2rem;
+  height: 2rem;
+}
+
+.play1 {
+  fill: var(--apple-green);
+}
+
+.play2 {
+  fill: var(--main-bg-color);
 }
 
 
