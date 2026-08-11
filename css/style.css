@@ -88,17 +88,31 @@ a {
   text-decoration: none;
 }
 
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-inline: auto;
+  width: 25rem;
+}
+
+#time-total {
+  opacity: 0.5;
+}
+
+.bigwrap {
+  display: flex;
+  justify-content: space-between;
+  margin-inline: 1rem;
+}
+
 .wrapper {
-  padding: 1rem;
   display: flex;
   flex-direction: row;
-  gap: 1em;
-  width: 25rem;
-  margin-inline: auto;
+  gap: 1rem;
 }
 
 .timer-info {
-  /* justify-content: center; */
   padding: 2rem;
   background-color:  var(--gruber-darker-bgp1);
 }
@@ -114,9 +128,10 @@ a {
 .timer-info__wrapper {
   display: flex;
   align-items: center;
-  /* justify-content: space-evenly; */
+  justify-content: space-between;
   flex-direction: row;
   margin-inline: auto;
+  padding-inline: 1rem;
   /* min-width: 30rem; */
   width: 25rem;
   gap: 3rem;
