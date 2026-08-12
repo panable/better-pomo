@@ -1,5 +1,26 @@
 window.onload = () => {
-  console.log("Hello world");
+  let tasks = [];
+
+  function makeTask(name, color, records, archived = false, deleted = false) {
+    return {
+      name,
+      color,
+      records,
+      archived,
+      deleted
+    };
+  }
+
+  function makeRecord(startDate, stopDate) {
+    return { startDate, stopDate };
+  }
+
+  1000 * 6 * 60 +  // 6 minutes
+  1000 * 15; // 15 seconds
+
+  tasks.push(makeTask("Leetcode", "#34c759", [makeRecord(Date.now() - (1000 * 6 * 60 + 1000 * 15), Date.now())]));
+
+  console.log(JSON.stringify(tasks, null, 4));
   console.log(performance.now());
 
   let button = document.getElementById("button");
@@ -10,7 +31,7 @@ window.onload = () => {
   let c_fg = cs.getPropertyValue("--fg-color");
   let c_bg = cs.getPropertyValue("--bg-color");
 
-  button.addEventListener("click", startTimer);
+  //button.addEventListener("click", startTimer);
   timer.addEventListener("click", changePomo);
 
   let max_pomo_length = 1 * 60 * 1000;

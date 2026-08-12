@@ -6,18 +6,18 @@
   --main-link-color: #96a6c8;
   --alt-bg-color: #282828;
 
-  --apple-red: rgb(255, 56, 60);
-  --apple-orange: rgb(255, 141, 40);
-  --apple-yellow: rgb(255, 204, 0);
-  --apple-green: rgb(52, 199, 89);
-  --apple-mint: rgb(0, 200, 179);
-  --apple-teal: rgb(0, 195, 208);
-  --apple-cyan: rgb(0, 192, 232);
-  --apple-blue: rgb(0, 136, 255);
-  --apple-indigo: rgb(97, 85, 245);
-  --apple-purple: rgb(203, 48, 224);
-  --apple-pink: rgb(255, 45, 85);
-  --apple-brown: rgb(172, 127, 94);
+  --apple-red: #ff383c;
+  --apple-orange: #ff8d28;
+  --apple-yellow: #ffcc00;
+  --apple-green: #34c759;
+  --apple-mint: #00c8b3;
+  --apple-teal: #00c3d0;
+  --apple-cyan: #00c0e8;
+  --apple-blue: #0088ff;
+  --apple-indigo: #6155f5;
+  --apple-purple: #cb30e0;
+  --apple-pink: #ff2d55;
+  --apple-brown: #ac7f5e;
 
   --gruber-darker-fg: #e4e4ef;
   --gruber-darker-fgp1: #f4f4ff;
@@ -48,7 +48,6 @@
 
   --gruber-darker-wisteria: #9e95c7;
 }
-
 
 html {
   overflow-x: hidden;
@@ -114,7 +113,7 @@ a {
 
 .timer-info {
   padding: 2rem;
-  background-color:  var(--gruber-darker-bgp1);
+  background-color: var(--gruber-darker-bgp1);
 }
 
 .timer-details {
@@ -172,7 +171,6 @@ p {
   fill: var(--main-bg-color);
 }
 
-
 a:hover {
   color: #4d6392;
 }
@@ -196,7 +194,11 @@ hr {
   display: block;
   position: absolute;
   border-radius: var(--size);
-  background: linear-gradient(to right, var(--gruber-darker-yellow) 50%, var(--main-bg-color) 50%);
+  background: linear-gradient(
+    to right,
+    var(--gruber-darker-yellow) 50%,
+    var(--main-bg-color) 50%
+  );
 }
 
 .hello {
