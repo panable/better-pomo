@@ -1,13 +1,15 @@
 window.onload = () => {
   let tasks = [];
 
+  // We won't delete anything because we will use the index of the array to identify
+  // the tasks. Actually deleting something will completely ruin everything probably.
   function makeTask(name, color, records, archived = false, deleted = false) {
     return {
       name,
       color,
       records,
       archived,
-      deleted
+      deleted,
     };
   }
 
@@ -15,13 +17,17 @@ window.onload = () => {
     return { startDate, stopDate };
   }
 
-  1000 * 6 * 60 +  // 6 minutes
-  1000 * 15; // 15 seconds
+  let def_time =
+    1000 * 6 * 60 + // 6 minutes
+    1000 * 15; // 15 seconds
 
-  tasks.push(makeTask("Leetcode", "#34c759", [makeRecord(Date.now() - (1000 * 6 * 60 + 1000 * 15), Date.now())]));
+  tasks.push(makeTask("Leetcode", "#34c759", []));
 
-  console.log(JSON.stringify(tasks, null, 4));
-  console.log(performance.now());
+  let taskList = document.getElementById("tasks");
+
+  let taskTemplate = document.getElementById("task-template").content.cloneNode(true);
+
+  taskList.appendChild(taskTemplate);
 
   let button = document.getElementById("button");
   let timer = document.getElementById("timer");

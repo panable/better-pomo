@@ -27,7 +27,7 @@
         </div>
       </section>
       <br />
-      <section class="tasks">
+      <section id="tasks">
         <div class="bigwrap">
           <p>Total time today:</p>
           <p class="time-total">0:06:15</p>
@@ -80,22 +80,24 @@
           </div>
           <p class="time2">0:06:15</p>
         </div>
-        <div class="bigwrap">
-          <div class="wrapper">
-            <svg
-              class="play"
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              viewBox="0 0 24 24"
-            >
-              <path style="fill: var(--apple-red);" d="M0 0h24v24H0z" />
-              <path class="play2" d="M8 5.14v14l11-7z" />
-            </svg>
-            <p>Better Pomo</p>
+        <template id="task-template">
+          <div class="bigwrap">
+            <div class="wrapper">
+              <svg
+                class="play"
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <path style="fill: var(--apple-red);" d="M0 0h24v24H0z" />
+                <path class="play2" d="M8 5.14v14l11-7z" />
+              </svg>
+              <p>Better Pomo</p>
+            </div>
+            <p class="time2">0:06:15</p>
           </div>
-          <p class="time2">0:06:15</p>
-        </div>
+        </template>
       </section>
     </main>
   </body>

@@ -87,7 +87,7 @@ a {
   text-decoration: none;
 }
 
-.tasks {
+#tasks {
   display: flex;
   flex-direction: column;
   gap: 2rem;
