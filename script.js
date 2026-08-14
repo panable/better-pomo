@@ -25,8 +25,15 @@ window.onload = () => {
 
   let taskList = document.getElementById("tasks");
 
-  let taskTemplate = document.getElementById("task-template").content.cloneNode(true);
+  let taskTemplate = document
+    .getElementById("task-template")
+    .content.cloneNode(true);
 
+  console.log(taskTemplate.querySelector("svg"));
+  console.log(taskTemplate.querySelector("svg").querySelector("path"));
+  taskTemplate.querySelector("svg").querySelector("path").style.fill=tasks[0].color;
+  taskTemplate.querySelector(".task_name").innerHTML = tasks[0].name;
+  taskTemplate.querySelector(".time2").innerHTML = "0:06:02"
   taskList.appendChild(taskTemplate);
 
   let button = document.getElementById("button");
