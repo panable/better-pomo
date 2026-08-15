@@ -2,6 +2,8 @@ window.onload = () => {
   let tasks = [];
   let taskList = document.getElementById("tasks");
   let taskTemplate = document.getElementById("task-template");
+  let totalTime = document.getElementById("time-total");
+
   // We won't delete anything because we will use the index of the array to identify
   // the tasks. Actually deleting something will completely ruin everything probably.
   function makeTask(name, color, records, archived = false, deleted = false) {
@@ -14,31 +16,74 @@ window.onload = () => {
     };
   }
 
-  function makeRecord(startDate, stopDate) {
-    return { startDate, stopDate };
+  function timeToMillis(hr, min, sec) {
+    return 1000 * 60 * 60 * hr + 1000 * 60 * min + 1000 * sec;
   }
+
+  function makeTimeRecord(
+    startDateOffset,
+    timeWorked,
+    hoursOffset = 0,
+    minutesOffset = 0,
+    secondsOffset = 0,
+  ) {
+    let startDate = new Date();
+    startDate.setDate(startDate.getDate() + startDateOffset);
+    startDate.setHours(hoursOffset);
+    startDate.setMinutes(minutesOffset);
+    startDate.setSeconds(secondsOffset);
+
+    let endDate = new Date(startDate);
+    endDate.setTime(endDate.getTime() + timeWorked);
+    return { startDate, endDate };
+  }
+
+  makeTimeRecord(0, timeToMillis(0, 3, 0));
 
   function appendTaskToDOM(task) {
     let newTask = taskTemplate.content.cloneNode(true);
 
-    newTask.querySelector("svg").querySelector("path").style.fill =
-      task.color;
+    newTask.querySelector("svg").querySelector("path").style.fill = task.color;
 
     newTask.querySelector(".task_name").innerHTML = task.name;
-    newTask.querySelector(".time2").innerHTML = "0:06:02";
+
+    // calculate time here:
+    let timeSpentToday = task.records
+      .filter(
+        // get today's records only
+        (record) => record.startDate.getDate() == new Date().getDate(),
+      )
+      .map(
+        // calculate time spent
+        (record) => record.endDate - record.startDate,
+      )
+      .reduce(
+        // add up all the time spent
+        (acc, record) => acc + record,
+        0, // set inital value to 0 - so we don't error when arr is empty
+      );
+
+    newTask.querySelector(".time2").innerHTML = renderTime(timeSpentToday);
 
     taskList.appendChild(newTask);
   }
 
-  let def_time =
-    1000 * 6 * 60 + // 6 minutes
-    1000 * 15; // 15 seconds
-
   // this will eventually be taken from the localStorage
   // we are creating tasks here in situ for testing purposes only.
   // we will use a similar method as this to actually create new tasks.
-  tasks.push(makeTask("LeetCode", "#34c759", []));
-  tasks.push(makeTask("Signals", "#cb30e0", []));
+  tasks.push(
+    makeTask("LeetCode", "#34c759", [
+      makeTimeRecord(-1, timeToMillis(0, 25, 2)),
+      makeTimeRecord(0, timeToMillis(1, 30, 2)),
+      makeTimeRecord(0, timeToMillis(2, 30, 2), 4),
+    ]),
+  );
+  tasks.push(
+    makeTask("Signals", "#cb30e0", [
+      makeTimeRecord(-2, timeToMillis(3, 6, 2)),
+      makeTimeRecord(0, timeToMillis(0, 6, 2)),
+    ]),
+  );
   tasks.push(makeTask("C++", "#ff8d28", []));
   tasks.push(makeTask("Better Pomo", "#ff383c", []));
 
