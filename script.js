@@ -1,6 +1,7 @@
 window.onload = () => {
   let tasks = [];
-
+  let taskList = document.getElementById("tasks");
+  let taskTemplate = document.getElementById("task-template");
   // We won't delete anything because we will use the index of the array to identify
   // the tasks. Actually deleting something will completely ruin everything probably.
   function makeTask(name, color, records, archived = false, deleted = false) {
@@ -17,24 +18,31 @@ window.onload = () => {
     return { startDate, stopDate };
   }
 
+  function appendTaskToDOM(task) {
+    let newTask = taskTemplate.content.cloneNode(true);
+
+    newTask.querySelector("svg").querySelector("path").style.fill =
+      task.color;
+
+    newTask.querySelector(".task_name").innerHTML = task.name;
+    newTask.querySelector(".time2").innerHTML = "0:06:02";
+
+    taskList.appendChild(newTask);
+  }
+
   let def_time =
     1000 * 6 * 60 + // 6 minutes
     1000 * 15; // 15 seconds
 
-  tasks.push(makeTask("Leetcode", "#34c759", []));
+  // this will eventually be taken from the localStorage
+  // we are creating tasks here in situ for testing purposes only.
+  // we will use a similar method as this to actually create new tasks.
+  tasks.push(makeTask("LeetCode", "#34c759", []));
+  tasks.push(makeTask("Signals", "#cb30e0", []));
+  tasks.push(makeTask("C++", "#ff8d28", []));
+  tasks.push(makeTask("Better Pomo", "#ff383c", []));
 
-  let taskList = document.getElementById("tasks");
-
-  let taskTemplate = document
-    .getElementById("task-template")
-    .content.cloneNode(true);
-
-  console.log(taskTemplate.querySelector("svg"));
-  console.log(taskTemplate.querySelector("svg").querySelector("path"));
-  taskTemplate.querySelector("svg").querySelector("path").style.fill=tasks[0].color;
-  taskTemplate.querySelector(".task_name").innerHTML = tasks[0].name;
-  taskTemplate.querySelector(".time2").innerHTML = "0:06:02"
-  taskList.appendChild(taskTemplate);
+  tasks.forEach((t) => appendTaskToDOM(t));
 
   let button = document.getElementById("button");
   let timer = document.getElementById("timer");
