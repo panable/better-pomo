@@ -66,7 +66,7 @@ window.onload = () => {
     let hours = Math.floor(minutes / 60);
 
     let visible_seconds = String(seconds % 60).padStart(2, "0");
-    let visible_minutes = String(minutes).padStart(2, "0");
+    let visible_minutes = String(minutes % 60).padStart(2, "0");
     let visible_hours = String(hours).padStart(2, "0");
 
     return `${visible_hours}:${visible_minutes}:${visible_seconds}`;
