@@ -69,12 +69,14 @@ window.onload = () => {
   }
 
   function calculateTotalTime(date) {
-    return tasks
+    let totalTimeSpent = tasks
       .map((t) => t.records)
       .flat()
       .filter((record) => record.startDate.getDate() == date)
       .map((record) => record.endDate - record.startDate)
       .reduce((acc, record) => acc + record);
+
+    console.log(JSON.stringify(totalTimeSpent));
   }
 
   // this will eventually be taken from the localStorage
@@ -97,7 +99,7 @@ window.onload = () => {
   tasks.push(makeTask("Better Pomo", "#ff383c", []));
 
   tasks.forEach((t) => appendTaskToDOM(t));
-  totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
+  calculateTotalTime(new Date().getDate());
 
   let button = document.getElementById("button");
   let timer = document.getElementById("timer");
