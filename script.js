@@ -64,8 +64,14 @@ window.onload = () => {
       );
 
     newTask.querySelector(".time2").innerHTML = renderTime(timeSpentToday);
+    newTask.querySelector(".button").addEventListener("click", () => startTaskTimer(task));
 
     taskList.appendChild(newTask);
+  }
+
+  function startTaskTimer(task) {
+    console.log(task);
+    startTimer();
   }
 
   function calculateTotalTime(date) {
@@ -99,7 +105,7 @@ window.onload = () => {
   tasks.forEach((t) => appendTaskToDOM(t));
   totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
 
-  let button = document.getElementById("button");
+  // let button = document.getElementById("button");
   let timer = document.getElementById("timer");
   let circle = document.getElementById("circle");
 
