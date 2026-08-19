@@ -158,6 +158,11 @@ p {
   align-self: center;
 }
 
+.button:hover {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
 .play {
   width: 2rem;
   height: 2rem;
