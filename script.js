@@ -70,7 +70,6 @@ window.onload = () => {
   }
 
   function startTaskTimer(task) {
-    console.log(task);
     startTimer();
   }
 
