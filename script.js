@@ -1,42 +1,62 @@
+function timeToMillis(hr, min, sec) {
+  return 1000 * 60 * 60 * hr + 1000 * 60 * min + 1000 * sec;
+}
+
+const State = {
+  IDLE: "idle",
+  PAUSED: "paused",
+  TICKING: "ticking",
+};
+
+const Mode = {
+  POMO: "pomo",
+  BREAK: "break",
+};
+
+let timer = {
+  state: State.IDLE,
+  mode: Mode.POMO,
+  break: timeToMillis(0, 5, 0),
+  pomo: timeToMillis(0, 25, 0),
+  elapsed: null,
+  startTime: null,
+};
+
+function makeTask(name, color, records, archived = false, deleted = false) {
+  return {
+    name,
+    color,
+    records,
+    archived,
+    deleted,
+  };
+}
+
+function makeTimeRecord(
+  startDateOffset,
+  timeWorked,
+  hoursOffset = 0,
+  minutesOffset = 0,
+  secondsOffset = 0,
+) {
+  let startDate = new Date();
+  startDate.setDate(startDate.getDate() + startDateOffset);
+  startDate.setHours(hoursOffset);
+  startDate.setMinutes(minutesOffset);
+  startDate.setSeconds(secondsOffset);
+
+  let endDate = new Date(startDate);
+  endDate.setTime(endDate.getTime() + timeWorked);
+  return { startDate, endDate };
+}
+
 window.onload = () => {
   let tasks = [];
   let taskList = document.getElementById("tasks");
   let taskTemplate = document.getElementById("task-template");
   let totalTime = document.getElementById("time-total");
-
-  // We won't delete anything because we will use the index of the array to identify
-  // the tasks. Actually deleting something will completely ruin everything probably.
-  function makeTask(name, color, records, archived = false, deleted = false) {
-    return {
-      name,
-      color,
-      records,
-      archived,
-      deleted,
-    };
-  }
-
-  function timeToMillis(hr, min, sec) {
-    return 1000 * 60 * 60 * hr + 1000 * 60 * min + 1000 * sec;
-  }
-
-  function makeTimeRecord(
-    startDateOffset,
-    timeWorked,
-    hoursOffset = 0,
-    minutesOffset = 0,
-    secondsOffset = 0,
-  ) {
-    let startDate = new Date();
-    startDate.setDate(startDate.getDate() + startDateOffset);
-    startDate.setHours(hoursOffset);
-    startDate.setMinutes(minutesOffset);
-    startDate.setSeconds(secondsOffset);
-
-    let endDate = new Date(startDate);
-    endDate.setTime(endDate.getTime() + timeWorked);
-    return { startDate, endDate };
-  }
+  let timerTxt = document.getElementById("timer");
+  let timerWheel = document.getElementById("circle");
 
   makeTimeRecord(0, timeToMillis(0, 3, 0));
 
@@ -64,7 +84,9 @@ window.onload = () => {
       );
 
     newTask.querySelector(".time2").innerHTML = renderTime(timeSpentToday);
-    newTask.querySelector(".button").addEventListener("click", () => startTaskTimer(task));
+    newTask
+      .querySelector(".button")
+      .addEventListener("click", () => startTaskTimer(task));
 
     taskList.appendChild(newTask);
   }
@@ -104,21 +126,11 @@ window.onload = () => {
   tasks.forEach((t) => appendTaskToDOM(t));
   totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
 
-  // let button = document.getElementById("button");
-  let timer = document.getElementById("timer");
-  let circle = document.getElementById("circle");
-
-  let cs = getComputedStyle(circle);
+  let cs = getComputedStyle(timerWheel);
   let c_fg = cs.getPropertyValue("--fg-color");
   let c_bg = cs.getPropertyValue("--bg-color");
 
-  //button.addEventListener("click", startTimer);
-  timer.addEventListener("click", changePomo);
-
-  let max_pomo_length = 1 * 60 * 1000;
-  let remaining = max_pomo_length;
-  let now = null;
-  let timer_started = false;
+  timerTxt.innerHTML = renderTime(timer.pomo);
 
   function renderTime(millis) {
     let seconds = Math.ceil(millis / 1000);
@@ -132,25 +144,24 @@ window.onload = () => {
     return `${visible_hours}:${visible_minutes}:${visible_seconds}`;
   }
 
-  function changePomo() {}
-
-  timer.innerHTML = renderTime(remaining);
-
   function tick() {
-    if (!timer_started) return;
-    elapsed = Date.now() - now;
+    console.log("Starting to tick...");
+    if (timer.state !== State.TICKING) {
+      return;
+    }
+    timer.elapsed = Date.now() - timer.startTime;
 
-    remaining = max_pomo_length - elapsed;
-    timer.innerHTML = renderTime(remaining);
+    let remaining = timer.pomo - timer.elapsed;
+    timerTxt.innerHTML = renderTime(remaining);
 
-    let step = 360 / max_pomo_length;
-    deg = step * elapsed;
+    let step = 360 / timer.pomo;
+    let deg = step * timer.elapsed;
     if (deg > 180) deg -= 180;
     set = (p, v) => {
-      circle.style.setProperty(p, v);
+      timerWheel.style.setProperty(p, v);
     };
     set("--rotation", `${deg}deg`);
-    remaining / max_pomo_length >= 0.5
+    remaining / timer.pomo >= 0.5
       ? set("--cntrl-color", c_bg)
       : set("--cntrl-color", c_fg);
 
@@ -158,8 +169,26 @@ window.onload = () => {
   }
 
   function startTimer() {
-    now = Date.now();
-    timer_started = !timer_started;
+    if (timer.state == State.TICKING) {
+      stopTimer();
+      return;
+    }
+
+    timer.startTime = Date.now();
+    timer.state = State.TICKING;
     requestAnimationFrame(tick);
+  }
+
+  function resetWheel() {
+    timerWheel.style.setProperty("--cntrl-color", c_bg);
+    timerWheel.style.setProperty("--rotation", "0deg");
+  }
+
+  function stopTimer() {
+    timer.state = State.IDLE;
+    timer.startTime = null;
+    timer.elapsed = null;
+    resetWheel();
+    timerTxt.innerHTML = renderTime(timer.pomo);
   }
 };
