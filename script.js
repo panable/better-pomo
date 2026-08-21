@@ -57,6 +57,7 @@ window.onload = () => {
   let totalTime = document.getElementById("time-total");
   let timerTxt = document.getElementById("timer");
   let timerWheel = document.getElementById("circle");
+  let focusTxt = document.getElementById("focus");
 
   makeTimeRecord(0, timeToMillis(0, 3, 0));
 
@@ -92,6 +93,8 @@ window.onload = () => {
   }
 
   function startTaskTimer(task) {
+    focusTxt.innerHTML = task.name;
+    focusTxt.style.color = task.color;
     startTimer();
   }
 
@@ -186,6 +189,8 @@ window.onload = () => {
 
   function stopTimer() {
     timer.state = State.IDLE;
+    focusTxt.style.color = window.getComputedStyle(document.body).getPropertyValue("--main-text-color");
+    focusTxt.innerHTML = "Focus time";
     timer.startTime = null;
     timer.elapsed = null;
     resetWheel();
