@@ -53,6 +53,10 @@ html {
   overflow-x: hidden;
 }
 
+.deactive {
+  display: none;
+}
+
 body {
   font-family: Iosevka Custom Web;
   font-weight: 400;
@@ -95,7 +99,19 @@ a {
   width: 25rem;
 }
 
+#task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-inline: auto;
+  width: 25rem;
+}
+
 #time-total {
+  opacity: 0.5;
+}
+
+.opacious {
   opacity: 0.5;
 }
 
@@ -158,12 +174,17 @@ p {
   align-self: center;
 }
 
-.button:hover {
-  opacity: 0.5;
+.hoverfx:hover {
+  opacity: 0.8;
   cursor: pointer;
 }
 
-.play {
+.non-clickable {
+  pointer-events: none;
+}
+
+.play,
+.pause {
   width: 2rem;
   height: 2rem;
 }

@@ -34,7 +34,21 @@
         </div>
         <template id="task-template">
           <div class="bigwrap">
-            <div class="button wrapper">
+            <div class="button hoverfx wrapper">
+              <svg
+                class="pause deactive"
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  class="button-bg"
+                  d="M0 0h24v24H0z"
+                  style="fill: var(--apple-red)"
+                />
+                <path class="play2" d="M14 19V5h4v14zm-8 0V5h4v14z" />
+              </svg>
               <svg
                 class="play"
                 xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +56,11 @@
                 height="1em"
                 viewBox="0 0 24 24"
               >
-                <path class="button-bg" style="fill: var(--apple-red);" d="M0 0h24v24H0z" />
+                <path
+                  class="button-bg"
+                  style="fill: var(--apple-red)"
+                  d="M0 0h24v24H0z"
+                />
                 <path class="play2" d="M8 5.14v14l11-7z" />
               </svg>
               <p class="task_name">Better Pomo</p>
@@ -50,6 +68,7 @@
             <p class="time2">0:06:15</p>
           </div>
         </template>
+        <div id="task-list"></div>
       </section>
     </main>
   </body>

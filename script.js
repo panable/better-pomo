@@ -29,6 +29,7 @@ function makeTask(name, color, records, archived = false, deleted = false) {
     records,
     archived,
     deleted,
+    node: undefined,
   };
 }
 
@@ -52,7 +53,7 @@ function makeTimeRecord(
 
 window.onload = () => {
   let tasks = [];
-  let taskList = document.getElementById("tasks");
+  let taskList = document.getElementById("task-list");
   let taskTemplate = document.getElementById("task-template");
   let totalTime = document.getElementById("time-total");
   let timerTxt = document.getElementById("timer");
@@ -64,7 +65,9 @@ window.onload = () => {
   function appendTaskToDOM(task) {
     let newTask = taskTemplate.content.cloneNode(true);
 
-    newTask.querySelector("svg").querySelector("path").style.fill = task.color;
+    newTask
+      .querySelectorAll("svg")
+      .forEach((t) => (t.querySelector("path").style.fill = task.color));
 
     newTask.querySelector(".task_name").innerHTML = task.name;
 
@@ -90,11 +93,36 @@ window.onload = () => {
       .addEventListener("click", () => startTaskTimer(task));
 
     taskList.appendChild(newTask);
+    task.node = taskList.lastElementChild;
   }
 
   function startTaskTimer(task) {
     focusTxt.innerHTML = task.name;
     focusTxt.style.color = task.color;
+    console.log(taskList.children);
+    if (timer.state == State.TICKING) {
+      Array.from(taskList.children)
+        .filter((t) => t != task.node)
+        .forEach((t) => {
+          t.classList.remove("opacious");
+          let button = t.querySelector(".button");
+          button.classList.add("hoverfx");
+          button.classList.remove("non-clickable");
+        });
+      task.node.querySelector(".pause").classList.add("deactive");
+      task.node.querySelector(".play").classList.remove("deactive");
+    } else {
+      Array.from(taskList.children)
+        .filter((t) => t != task.node)
+        .forEach((t) => {
+          t.classList.add("opacious");
+          let button = t.querySelector(".button");
+          button.classList.remove("hoverfx");
+          button.classList.add("non-clickable");
+        });
+      task.node.querySelector(".pause").classList.remove("deactive");
+      task.node.querySelector(".play").classList.add("deactive");
+    }
     startTimer();
   }
 
@@ -189,7 +217,9 @@ window.onload = () => {
 
   function stopTimer() {
     timer.state = State.IDLE;
-    focusTxt.style.color = window.getComputedStyle(document.body).getPropertyValue("--main-text-color");
+    focusTxt.style.color = window
+      .getComputedStyle(document.body)
+      .getPropertyValue("--main-text-color");
     focusTxt.innerHTML = "Focus time";
     timer.startTime = null;
     timer.elapsed = null;
