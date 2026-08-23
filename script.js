@@ -16,8 +16,10 @@ const Mode = {
 let timer = {
   state: State.IDLE,
   mode: Mode.POMO,
+  // TODO: store these as minutes:
   break: timeToMillis(0, 5, 0),
   pomo: timeToMillis(0, 25, 0),
+  // --------------------------- //
   elapsed: null,
   startTime: null,
 };
@@ -59,8 +61,27 @@ window.onload = () => {
   let timerTxt = document.getElementById("timer");
   let timerWheel = document.getElementById("circle");
   let focusTxt = document.getElementById("focus");
+  let pomoEditMenu = document.getElementById("edit-pomo");
+  let pomoLengthInput = document.getElementById("pomoLength");
+  let breakLengthInput = document.getElementById("breakLength");
 
-  makeTimeRecord(0, timeToMillis(0, 3, 0));
+  timerWheel.addEventListener("click", editPomo);
+  pomoLengthInput.value = timer.pomo / 1000 / 60;
+  breakLengthInput.value = timer.break / 1000 / 60;
+
+  pomoLengthInput.addEventListener("input", (val) => {
+    timer.pomo = val.target.value * 60 * 1000;
+    timerTxt.innerHTML = renderTime(timer.pomo);
+  });
+
+  breakLengthInput.addEventListener("input", (val) => {
+    timer.break = val.target.value * 60 * 1000;
+  });
+
+  function editPomo() {
+    console.log("Hello world");
+    pomoEditMenu.showModal();
+  }
 
   function appendTaskToDOM(task) {
     let newTask = taskTemplate.content.cloneNode(true);
@@ -101,6 +122,8 @@ window.onload = () => {
     focusTxt.style.color = task.color;
     console.log(taskList.children);
     if (timer.state == State.TICKING) {
+      timerWheel.classList.add("hoverfx");
+      timerWheel.classList.remove("non-clickable");
       Array.from(taskList.children)
         .filter((t) => t != task.node)
         .forEach((t) => {
@@ -112,6 +135,8 @@ window.onload = () => {
       task.node.querySelector(".pause").classList.add("deactive");
       task.node.querySelector(".play").classList.remove("deactive");
     } else {
+      timerWheel.classList.remove("hoverfx");
+      timerWheel.classList.add("non-clickable");
       Array.from(taskList.children)
         .filter((t) => t != task.node)
         .forEach((t) => {
