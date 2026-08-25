@@ -22,6 +22,7 @@ let timer = {
   // --------------------------- //
   elapsed: null,
   startTime: null,
+  trackedTask: null,
 };
 
 function makeTask(name, color, records, archived = false, deleted = false) {
@@ -111,17 +112,17 @@ window.onload = () => {
     newTask.querySelector(".time2").innerHTML = renderTime(timeSpentToday);
     newTask
       .querySelector(".button")
-      .addEventListener("click", () => startTaskTimer(task));
+      .addEventListener("click", () => taskButtonAction(task));
 
     taskList.appendChild(newTask);
     task.node = taskList.lastElementChild;
   }
 
-  function startTaskTimer(task) {
+  function taskButtonAction(task) {
     focusTxt.innerHTML = task.name;
     focusTxt.style.color = task.color;
     console.log(taskList.children);
-    if (timer.state == State.TICKING) {
+    if (timer.state == State.TICKING) { // timer already started
       timerWheel.classList.add("hoverfx");
       timerWheel.classList.remove("non-clickable");
       Array.from(taskList.children)
@@ -134,7 +135,7 @@ window.onload = () => {
         });
       task.node.querySelector(".pause").classList.add("deactive");
       task.node.querySelector(".play").classList.remove("deactive");
-    } else {
+    } else { // start timer
       timerWheel.classList.remove("hoverfx");
       timerWheel.classList.add("non-clickable");
       Array.from(taskList.children)
