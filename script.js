@@ -16,7 +16,6 @@ const Mode = {
 let timer = {
   state: State.IDLE,
   mode: Mode.POMO,
-  // TODO: store these as minutes:
   break: timeToMillis(0, 5, 0),
   pomo: timeToMillis(0, 25, 0),
   // --------------------------- //
