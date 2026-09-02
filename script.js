@@ -64,6 +64,9 @@ window.onload = () => {
   let pomoEditMenu = document.getElementById("edit-pomo");
   let pomoLengthInput = document.getElementById("pomoLength");
   let breakLengthInput = document.getElementById("breakLength");
+  let timerCntrl = document.getElementById("timer-cntrl");
+  let timerCntrlInterval = null;
+  createTimerCntrlInterval();
 
   timerWheel.addEventListener("click", editPomo);
   pomoLengthInput.value = timer.pomo / 1000 / 60;
@@ -77,6 +80,27 @@ window.onload = () => {
   breakLengthInput.addEventListener("input", (val) => {
     timer.break = val.target.value * 60 * 1000;
   });
+
+  function createTimerCntrlInterval() {
+    let set = (() => {
+      let current = new Date();
+      current.setTime(current.getTime() + timer.pomo);
+
+      let futureTime = current.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      timerCntrl.innerText = `Now -> ${futureTime}`;
+    })();
+
+    timerCntrlInterval = setInterval(set, 1000);
+  }
+
+  function clearTimerCntrlInterval() {
+    if (timerCntrlInterval) clearInterval(timerCntrlInterval);
+
+    timerCntrl.innerText = "ticking";
+  }
 
   function editPomo() {
     console.log("Hello world");
@@ -121,7 +145,9 @@ window.onload = () => {
     focusTxt.innerHTML = task.name;
     focusTxt.style.color = task.color;
     console.log(taskList.children);
-    if (timer.state == State.TICKING) { // timer already started
+    if (timer.state == State.TICKING) {
+      // timer already started
+      createTimerCntrlInterval();
       timerWheel.classList.add("hoverfx");
       timerWheel.classList.remove("non-clickable");
       Array.from(taskList.children)
@@ -134,7 +160,9 @@ window.onload = () => {
         });
       task.node.querySelector(".pause").classList.add("deactive");
       task.node.querySelector(".play").classList.remove("deactive");
-    } else { // start timer
+    } else {
+      // start timer
+      clearTimerCntrlInterval();
       timerWheel.classList.remove("hoverfx");
       timerWheel.classList.add("non-clickable");
       Array.from(taskList.children)
