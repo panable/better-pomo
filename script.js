@@ -141,6 +141,8 @@ window.onload = () => {
     task.node = taskList.lastElementChild;
   }
 
+  // TODO: Separate start/stop logic.
+  // Also need to set trackedTask
   function taskButtonAction(task) {
     focusTxt.innerHTML = task.name;
     focusTxt.style.color = task.color;
@@ -148,6 +150,32 @@ window.onload = () => {
     if (timer.state == State.TICKING) {
       // timer already started
       createTimerCntrlInterval();
+
+      task.records.push({
+        startDate: new Date(timer.startTime),
+        endDate: new Date(timer.startTime + timer.elapsed),
+      });
+
+      // TODO: change this into a function
+      // Also this is a little broken because it doesn't account
+      // for records that span for multiple days...
+      let timeSpentToday = task.records
+        .filter(
+          // get today's records only
+          (record) => record.startDate.getDate() == new Date().getDate(),
+        )
+        .map(
+          // calculate time spent
+          (record) => record.endDate - record.startDate,
+        )
+        .reduce(
+          // add up all the time spent
+          (acc, record) => acc + record,
+          0, // set inital value to 0 - so we don't error when arr is empty
+        );
+
+      task.node.querySelector(".time2").innerHTML = renderTime(timeSpentToday);
+
       timerWheel.classList.add("hoverfx");
       timerWheel.classList.remove("non-clickable");
       Array.from(taskList.children)
