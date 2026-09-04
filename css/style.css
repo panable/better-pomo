@@ -141,7 +141,7 @@ a {
   opacity: 0.5;
 }
 
-.bigwrap {
+.flex-between {
   display: flex;
   justify-content: space-between;
   margin-inline: 1rem;
