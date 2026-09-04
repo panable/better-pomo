@@ -110,7 +110,7 @@ a {
   background-color: var(--gruber-darker-bgp1);
 }
 
-.contants {
+.timer-settings {
   padding: 2rem;
   display: flex;
   flex-direction: column;
