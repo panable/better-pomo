@@ -132,78 +132,120 @@ function appendTaskToDOM(task) {
     );
 
   newTask.querySelector(".time2").innerHTML = renderTime(timeSpentToday);
-  newTask
-    .querySelector(".button")
-    .addEventListener("click", () => taskButtonAction(task));
+
+  let button = newTask.querySelector(".button");
+
+  button.addEventListener("click", () => {
+    let cl = button.querySelector("svg:not(.deactive)").classList;
+    if (cl.contains("play")) {
+      taskButtonPlay(task);
+    } else if (cl.contains("pause")) {
+      taskButtonPause();
+    } else if (cl.contains("stop")) {
+      taskButtonStop();
+    }
+  });
 
   taskList.appendChild(newTask);
   task.node = taskList.lastElementChild;
 }
 
-// TODO: Separate start/stop logic.
-// Also need to set trackedTask
-function taskButtonAction(task) {
+function taskButtonPlay(task) {
+  console.assert(timer.mode != State.TICKING, {
+    mode: timer.mode,
+    errorMsg: "trying to start timer that has already started...",
+  });
+
+  // set focusTxt
   focusTxt.innerHTML = task.name;
   focusTxt.style.color = task.color;
-  console.log(taskList.children);
-  if (timer.state == State.TICKING) {
-    // timer already started
-    createTimerCntrlInterval();
 
-    task.records.push({
-      startDate: new Date(timer.startTime),
-      endDate: new Date(timer.startTime + timer.elapsed),
+  // clear timerCntrl
+  clearTimerCntrlInterval();
+
+  // set timerwheel to non-clickable
+  timerWheel.classList.remove("hoverfx");
+  timerWheel.classList.add("non-clickable");
+
+  // set all buttons to opacious and non-clickable
+  Array.from(taskList.children)
+    .filter((t) => t != task.node)
+    .forEach((t) => {
+      t.classList.add("opacious");
+      let button = t.querySelector(".button");
+      button.classList.remove("hoverfx");
+      button.classList.add("non-clickable");
     });
 
-    // TODO: change this into a function
-    // Also this is a little broken because it doesn't account
-    // for records that span for multiple days...
-    let timeSpentToday = task.records
-      .filter(
-        // get today's records only
-        (record) => record.startDate.getDate() == new Date().getDate(),
-      )
-      .map(
-        // calculate time spent
-        (record) => record.endDate - record.startDate,
-      )
-      .reduce(
-        // add up all the time spent
-        (acc, record) => acc + record,
-        0, // set inital value to 0 - so we don't error when arr is empty
-      );
+  // Play -> Pause button
+  task.node.querySelector(".pause").classList.remove("deactive");
+  task.node.querySelector(".play").classList.add("deactive");
 
-    task.node.querySelector(".time2").innerHTML = renderTime(timeSpentToday);
+  // set timer info
+  timer.startTime = Date.now();
+  timer.state = State.TICKING;
+  timer.trackedTask = task;
 
-    timerWheel.classList.add("hoverfx");
-    timerWheel.classList.remove("non-clickable");
-    Array.from(taskList.children)
-      .filter((t) => t != task.node)
-      .forEach((t) => {
-        t.classList.remove("opacious");
-        let button = t.querySelector(".button");
-        button.classList.add("hoverfx");
-        button.classList.remove("non-clickable");
-      });
-    task.node.querySelector(".pause").classList.add("deactive");
-    task.node.querySelector(".play").classList.remove("deactive");
-  } else {
-    // start timer
-    clearTimerCntrlInterval();
-    timerWheel.classList.remove("hoverfx");
-    timerWheel.classList.add("non-clickable");
-    Array.from(taskList.children)
-      .filter((t) => t != task.node)
-      .forEach((t) => {
-        t.classList.add("opacious");
-        let button = t.querySelector(".button");
-        button.classList.remove("hoverfx");
-        button.classList.add("non-clickable");
-      });
-    task.node.querySelector(".pause").classList.remove("deactive");
-    task.node.querySelector(".play").classList.add("deactive");
-  }
-  startTimer();
+  requestAnimationFrame(tick);
+}
+
+function taskButtonStop() {
+  // timer already started
+  createTimerCntrlInterval();
+
+  timer.trackedTask.records.push({
+    startDate: new Date(timer.startTime),
+    endDate: new Date(timer.startTime + timer.elapsed),
+  });
+
+  // TODO: change this into a function
+  // Also this is a little broken because it doesn't account
+  // for records that span for multiple days...
+  let timeSpentToday = timer.trackedTask.records
+    .filter(
+      // get today's records only
+      (record) => record.startDate.getDate() == new Date().getDate(),
+    )
+    .map(
+      // calculate time spent
+      (record) => record.endDate - record.startDate,
+    )
+    .reduce(
+      // add up all the time spent
+      (acc, record) => acc + record,
+      0, // set inital value to 0 - so we don't error when arr is empty
+    );
+
+  timer.trackedTask.node.querySelector(".time2").innerHTML =
+    renderTime(timeSpentToday);
+
+  timerWheel.classList.add("hoverfx");
+  timerWheel.classList.remove("non-clickable");
+  Array.from(taskList.children)
+    .filter((t) => t != timer.trackedTask.node)
+    .forEach((t) => {
+      t.classList.remove("opacious");
+      let button = t.querySelector(".button");
+      button.classList.add("hoverfx");
+      button.classList.remove("non-clickable");
+    });
+  timer.trackedTask.node.querySelector(".pause").classList.add("deactive");
+  timer.trackedTask.node.querySelector(".play").classList.remove("deactive");
+  timer.state = State.IDLE;
+  focusTxt.style.color = window
+    .getComputedStyle(document.body)
+    .getPropertyValue("--main-text-color");
+  focusTxt.innerHTML = "Focus time";
+  timer.startTime = null;
+  timer.elapsed = null;
+  timer.trackedTask = null;
+  resetWheel();
+  timerTxt.innerHTML = renderTime(timer.pomo);
+}
+
+function taskButtonPause() {
+  // just call this for now... until actual pause logic is complete.
+  taskButtonStop();
 }
 
 function calculateTotalTime(date) {
@@ -279,30 +321,7 @@ function tick() {
   requestAnimationFrame(tick);
 }
 
-function startTimer() {
-  if (timer.state == State.TICKING) {
-    stopTimer();
-    return;
-  }
-
-  timer.startTime = Date.now();
-  timer.state = State.TICKING;
-  requestAnimationFrame(tick);
-}
-
 function resetWheel() {
   timerWheel.style.setProperty("--cntrl-color", c_bg);
   timerWheel.style.setProperty("--rotation", "0deg");
-}
-
-function stopTimer() {
-  timer.state = State.IDLE;
-  focusTxt.style.color = window
-    .getComputedStyle(document.body)
-    .getPropertyValue("--main-text-color");
-  focusTxt.innerHTML = "Focus time";
-  timer.startTime = null;
-  timer.elapsed = null;
-  resetWheel();
-  timerTxt.innerHTML = renderTime(timer.pomo);
 }
