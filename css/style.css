@@ -257,7 +257,7 @@ hr {
   margin: 1rem 0;
 }
 
-.hello::before {
+#circle-timer::before {
   content: "";
   width: var(--size);
   height: var(--size);
@@ -271,7 +271,7 @@ hr {
   );
 }
 
-.hello {
+#circle-timer {
   --rotation: 0deg;
   --bg-color: var(--gruber-darker-yellow);
   --fg-color: var(--main-bg-color);
@@ -281,7 +281,7 @@ hr {
   height: var(--size);
 }
 
-.hello::after {
+#circle-timer::after {
   content: "";
   width: calc(var(--size) / 2);
   height: var(--size);
