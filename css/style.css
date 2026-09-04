@@ -153,7 +153,7 @@ a {
   gap: 1rem;
 }
 
-.wrapper2 {
+.timer-settings > * {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
