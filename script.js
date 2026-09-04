@@ -131,7 +131,8 @@ function appendTaskToDOM(task) {
       0, // set inital value to 0 - so we don't error when arr is empty
     );
 
-  newTask.querySelector(".task__time-spent").innerHTML = renderTime(timeSpentToday);
+  newTask.querySelector(".task__time-spent").innerHTML =
+    renderTime(timeSpentToday);
 
   let button = newTask.querySelector(".button");
 
@@ -190,7 +191,10 @@ function taskButtonPlay(task) {
 }
 
 function taskButtonStop() {
-  // timer already started
+  console.assert(timer.mode != State.IDLE, {
+    mode: timer.mode,
+    errorMsg: "trying to stop timer that hasn't started...",
+  });
   createTimerCntrlInterval();
 
   timer.trackedTask.records.push({
