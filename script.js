@@ -131,7 +131,7 @@ function appendTaskToDOM(task) {
       0, // set inital value to 0 - so we don't error when arr is empty
     );
 
-  newTask.querySelector(".time2").innerHTML = renderTime(timeSpentToday);
+  newTask.querySelector(".task__time-spent").innerHTML = renderTime(timeSpentToday);
 
   let button = newTask.querySelector(".button");
 
@@ -216,7 +216,7 @@ function taskButtonStop() {
       0, // set inital value to 0 - so we don't error when arr is empty
     );
 
-  timer.trackedTask.node.querySelector(".time2").innerHTML =
+  timer.trackedTask.node.querySelector(".task__time-spent").innerHTML =
     renderTime(timeSpentToday);
 
   timerWheel.classList.add("hoverfx");
