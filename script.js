@@ -17,7 +17,7 @@ let timer = {
   state: State.IDLE,
   mode: Mode.POMO,
   break: timeToMillis(0, 5, 0),
-  pomo: timeToMillis(0, 25, 0),
+  pomo: timeToMillis(0, 0.1, 0),
   // --------------------------- //
   elapsed: null,
   startTime: null,
@@ -289,8 +289,11 @@ let c_bg = cs.getPropertyValue("--bg-color");
 
 timerTxt.innerHTML = renderTime(timer.pomo);
 
-function renderTime(millis) {
-  let seconds = Math.ceil(millis / 1000);
+function renderTime(millis, ceil = false) {
+  let seconds = millis / 1000;
+  if (ceil) seconds = Math.ceil(seconds);
+  else seconds = Math.floor(seconds);
+
   let minutes = Math.floor(seconds / 60);
   let hours = Math.floor(minutes / 60);
 
@@ -309,16 +312,29 @@ function tick() {
   timer.elapsed = Date.now() - timer.startTime;
 
   let remaining = timer.pomo - timer.elapsed;
-  timerTxt.innerHTML = renderTime(remaining);
+  let overflowed = remaining < 0;
 
+  if (overflowed) {
+    let renderedTime = renderTime(Math.abs(remaining), false);
+    // let prefix = renderedTime === "00:00:00" ? "" : "+";
+    timerTxt.innerHTML = "+" + renderedTime;
+  } else {
+    timerTxt.innerHTML = renderTime(Math.abs(remaining), true);
+  }
+
+  let normalisedRemaining = timer.pomo - (timer.elapsed % timer.pomo);
   let step = 360 / timer.pomo;
-  let deg = step * timer.elapsed;
+  let deg = step * (timer.elapsed % timer.pomo);
   if (deg > 180) deg -= 180;
   set = (p, v) => {
     timerWheel.style.setProperty(p, v);
   };
   set("--rotation", `${deg}deg`);
-  remaining / timer.pomo >= 0.5
+
+  // let numRotations = Math.floor(timer.elapsed / timer.pomo);
+  // console.log(numRotations);
+
+  normalisedRemaining / timer.pomo >= 0.5
     ? set("--cntrl-color", c_bg)
     : set("--cntrl-color", c_fg);
 
