@@ -102,7 +102,6 @@ function clearTimerCntrlInterval() {
 }
 
 function editPomo() {
-  console.log("Hello world");
   pomoEditMenu.showModal();
 }
 
@@ -305,7 +304,6 @@ function renderTime(millis, ceil = false) {
 }
 
 function tick() {
-  console.log("Starting to tick...");
   if (timer.state !== State.TICKING) {
     return;
   }
@@ -324,7 +322,6 @@ function tick() {
 
   let step = 360 / timer.pomo;
   let deg = step * (timer.elapsed % timer.pomo);
-  console.log(deg);
 
   // let numRotations = Math.floor(timer.elapsed / timer.pomo);
   // console.log(numRotations);
