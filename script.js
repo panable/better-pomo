@@ -329,15 +329,11 @@ function tick() {
   // let numRotations = Math.floor(timer.elapsed / timer.pomo);
   // console.log(numRotations);
 
-  set = (p, v) => {
-    timerWheel.style.setProperty(p, v);
-  };
-  set("--progress", `${deg}deg`);
+  timerWheel.style.setProperty("--progress", `${deg}deg`);
 
   requestAnimationFrame(tick);
 }
 
 function resetWheel() {
-  timerWheel.style.setProperty("--cntrl-color", c_bg);
-  timerWheel.style.setProperty("--rotation", "0deg");
+  timerWheel.style.setProperty("--progress", "0deg");
 }
