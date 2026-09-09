@@ -244,6 +244,7 @@ function taskButtonStop() {
   timer.trackedTask = null;
   resetWheel();
   timerTxt.innerHTML = renderTime(timer.pomo);
+  timerTxt.classList.remove("positive");
 }
 
 function taskButtonPause() {
@@ -347,4 +348,6 @@ function tick() {
 
 function resetWheel() {
   timerWheel.style.setProperty("--progress", "0deg");
+  timerWheel.style.setProperty("--bg-color", wheelBgColor);
+  timerWheel.style.setProperty("--fg-color", pomoWheelColor);
 }
