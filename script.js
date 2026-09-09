@@ -282,9 +282,13 @@ tasks.push(makeTask("Better Pomo", "#ff383c", []));
 tasks.forEach((t) => appendTaskToDOM(t));
 totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
 
-let cs = getComputedStyle(timerWheel);
-let c_fg = cs.getPropertyValue("--fg-color");
-let c_bg = cs.getPropertyValue("--bg-color");
+// --pomo-wheel-color: var(--gruber-darker-yellow);
+// --break-wheel-color: var(--gruber-darker-niagara);
+// --wheel-bg-color: var(--main-bg-color);
+let timerWheelCS = getComputedStyle(timerWheel);
+let pomoWheelColor = timerWheelCS.getPropertyValue("--pomo-wheel-color");
+let breakWheelColor = timerWheelCS.getPropertyValue("--break-wheel-color");
+let wheelBgColor = timerWheelCS.getPropertyValue("--wheel-bg-color");
 
 timerTxt.innerHTML = renderTime(timer.pomo);
 
@@ -324,11 +328,20 @@ function tick() {
   let step = 360 / timer.pomo;
   let deg = step * (timer.elapsed % timer.pomo);
 
-  // let numRotations = Math.floor(timer.elapsed / timer.pomo);
-  // console.log(numRotations);
+  let numRotations = Math.floor(timer.elapsed / timer.pomo);
+
+  let currentFgColor =
+    timer.mode === Mode.POMO ? pomoWheelColor : breakWheelColor;
+
+  if (numRotations % 2 == 0) {
+    timerWheel.style.setProperty("--bg-color", wheelBgColor);
+    timerWheel.style.setProperty("--fg-color", currentFgColor);
+  } else {
+    timerWheel.style.setProperty("--bg-color", currentFgColor);
+    timerWheel.style.setProperty("--fg-color", wheelBgColor);
+  }
 
   timerWheel.style.setProperty("--progress", `${deg}deg`);
-
   requestAnimationFrame(tick);
 }
 

@@ -260,17 +260,23 @@ hr {
 }
 
 #circle-timer {
-  border-radius: calc(var(--size));
-  --progress: 0deg;
-  width: 200px;
-  height: 200px;
+  /* Defaults */
+  --pomo-wheel-color: var(--gruber-darker-yellow);
+  --break-wheel-color: var(--gruber-darker-niagara);
+  --wheel-bg-color: var(--main-bg-color);
 
-  --bg-color: var(--gruber-darker-yellow);
-  --fg-color: var(--main-bg-color);
+  /* Current */
+  --fg-color: var(--pomo-wheel-color);
+  --bg-color: var(--main-bg-color);
+  --progress: 0deg;
+
+  border-radius: var(--size);
+  width: var(--size);
+  height: var(--size);
 
   background: conic-gradient(
-    var(--fg-color) 0deg var(--progress),
-    var(--bg-color) var(--progress) 360deg
+    var(--bg-color) 0deg var(--progress),
+    var(--fg-color) var(--progress) 360deg
   );
 
   position: relative;
