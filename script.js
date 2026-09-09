@@ -81,7 +81,7 @@ breakLengthInput.addEventListener("input", (val) => {
 });
 
 function createTimerCntrlInterval() {
-  let set = (() => {
+  let set = () => {
     let current = new Date();
     current.setTime(current.getTime() + timer.pomo);
 
@@ -90,8 +90,8 @@ function createTimerCntrlInterval() {
       minute: "2-digit",
     });
     timerCntrl.innerText = `Now -> ${futureTime}`;
-  })();
-
+  };
+  set();
   timerCntrlInterval = setInterval(set, 1000);
 }
 
