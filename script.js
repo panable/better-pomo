@@ -322,21 +322,17 @@ function tick() {
     timerTxt.innerHTML = renderTime(Math.abs(remaining), true);
   }
 
-  let normalisedRemaining = timer.pomo - (timer.elapsed % timer.pomo);
   let step = 360 / timer.pomo;
   let deg = step * (timer.elapsed % timer.pomo);
-  if (deg > 180) deg -= 180;
-  set = (p, v) => {
-    timerWheel.style.setProperty(p, v);
-  };
-  set("--rotation", `${deg}deg`);
+  console.log(deg);
 
   // let numRotations = Math.floor(timer.elapsed / timer.pomo);
   // console.log(numRotations);
 
-  normalisedRemaining / timer.pomo >= 0.5
-    ? set("--cntrl-color", c_bg)
-    : set("--cntrl-color", c_fg);
+  set = (p, v) => {
+    timerWheel.style.setProperty(p, v);
+  };
+  set("--progress", `${deg}deg`);
 
   requestAnimationFrame(tick);
 }

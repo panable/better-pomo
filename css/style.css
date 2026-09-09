@@ -193,7 +193,7 @@ input {
   padding-inline: 1rem;
   /* min-width: 30rem; */
   width: 25rem;
-  gap: 3rem;
+  gap: 2.5rem;
 }
 
 #focus {
@@ -257,40 +257,19 @@ hr {
   margin: 1rem 0;
 }
 
-#circle-timer::before {
-  content: "";
-  width: var(--size);
-  height: var(--size);
-  display: block;
-  position: absolute;
-  border-radius: var(--size);
-  background: linear-gradient(
-    to right,
-    var(--gruber-darker-yellow) 50%,
-    var(--main-bg-color) 50%
-  );
-}
-
 #circle-timer {
-  --rotation: 0deg;
+  border-radius: calc(var(--size));
+  --progress: 0deg;
+  width: 200px;
+  height: 200px;
+
   --bg-color: var(--gruber-darker-yellow);
   --fg-color: var(--main-bg-color);
-  --cntrl-color: var(--bg-color);
-  position: relative;
-  width: var(--size);
-  height: var(--size);
-}
 
-#circle-timer::after {
-  content: "";
-  width: calc(var(--size) / 2);
-  height: var(--size);
-  left: calc(var(--size) / 2);
-  transform-origin: 0px calc(var(--size) / 2);
-  transform: rotate(var(--rotation));
-  position: absolute;
-  display: block;
-  background: var(--cntrl-color);
-  border-top-right-radius: calc(var(--size) / 2);
-  border-bottom-right-radius: calc(var(--size) / 2);
+  background: conic-gradient(
+    var(--fg-color) 0deg var(--progress),
+    var(--bg-color) var(--progress) 360deg
+  );
+
+  position: relative;
 }
