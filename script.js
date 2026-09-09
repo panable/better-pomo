@@ -314,9 +314,10 @@ function tick() {
 
   if (overflowed) {
     let renderedTime = renderTime(Math.abs(remaining), false);
-    // let prefix = renderedTime === "00:00:00" ? "" : "+";
-    timerTxt.innerHTML = "+" + renderedTime;
+    timerTxt.classList.add("positive");
+    timerTxt.innerHTML = renderedTime;
   } else {
+    timerTxt.classList.remove("positive");
     timerTxt.innerHTML = renderTime(Math.abs(remaining), true);
   }
 
