@@ -99,6 +99,17 @@ body {
   opacity: 0.8;
 }
 
+#edit-tasks {
+  display: flex;
+  gap: 1rem;
+  margin-inline: 1rem;
+  padding: 0.5rem;
+  background-color: var(--gruber-darker-bgp1);
+  width: fit-content;
+  border-radius: 1rem;
+  user-select: none;
+}
+
 a {
   color: var(--main-link-color);
   text-decoration: none;
