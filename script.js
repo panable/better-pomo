@@ -1,4 +1,4 @@
-() => {
+(() => {
   function timeToMillis(hr, min, sec) {
     return 1000 * 60 * 60 * hr + 1000 * 60 * min + 1000 * sec;
   }
@@ -352,4 +352,4 @@
     timerWheel.style.setProperty("--bg-color", wheelBgColor);
     timerWheel.style.setProperty("--fg-color", pomoWheelColor);
   }
-};
+})();
