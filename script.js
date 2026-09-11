@@ -1,353 +1,355 @@
-function timeToMillis(hr, min, sec) {
-  return 1000 * 60 * 60 * hr + 1000 * 60 * min + 1000 * sec;
-}
+() => {
+  function timeToMillis(hr, min, sec) {
+    return 1000 * 60 * 60 * hr + 1000 * 60 * min + 1000 * sec;
+  }
 
-const State = {
-  IDLE: "idle",
-  PAUSED: "paused",
-  TICKING: "ticking",
-};
-
-const Mode = {
-  POMO: "pomo",
-  BREAK: "break",
-};
-
-let timer = {
-  state: State.IDLE,
-  mode: Mode.POMO,
-  break: timeToMillis(0, 5, 0),
-  pomo: timeToMillis(0, 0.1, 0),
-  // --------------------------- //
-  elapsed: null,
-  startTime: null,
-  trackedTask: null,
-};
-
-function makeTask(name, color, records, archived = false, deleted = false) {
-  return {
-    name,
-    color,
-    records,
-    archived,
-    deleted,
-    node: undefined,
+  const State = {
+    IDLE: "idle",
+    PAUSED: "paused",
+    TICKING: "ticking",
   };
-}
 
-function makeTimeRecord(
-  startDateOffset,
-  timeWorked,
-  hoursOffset = 0,
-  minutesOffset = 0,
-  secondsOffset = 0,
-) {
-  let startDate = new Date();
-  startDate.setDate(startDate.getDate() + startDateOffset);
-  startDate.setHours(hoursOffset);
-  startDate.setMinutes(minutesOffset);
-  startDate.setSeconds(secondsOffset);
-
-  let endDate = new Date(startDate);
-  endDate.setTime(endDate.getTime() + timeWorked);
-  return { startDate, endDate };
-}
-
-let tasks = [];
-let taskList = document.getElementById("task-list");
-let taskTemplate = document.getElementById("task-template");
-let totalTime = document.getElementById("time-total");
-let timerTxt = document.getElementById("timer");
-let timerWheel = document.getElementById("circle-timer");
-let focusTxt = document.getElementById("focus");
-let pomoEditMenu = document.getElementById("edit-pomo");
-let pomoLengthInput = document.getElementById("pomoLength");
-let breakLengthInput = document.getElementById("breakLength");
-let timerCntrl = document.getElementById("timer-cntrl");
-let timerCntrlInterval = null;
-createTimerCntrlInterval();
-
-timerWheel.addEventListener("click", editPomo);
-pomoLengthInput.value = timer.pomo / 1000 / 60;
-breakLengthInput.value = timer.break / 1000 / 60;
-
-pomoLengthInput.addEventListener("input", (val) => {
-  timer.pomo = val.target.value * 60 * 1000;
-  timerTxt.innerHTML = renderTime(timer.pomo);
-});
-
-breakLengthInput.addEventListener("input", (val) => {
-  timer.break = val.target.value * 60 * 1000;
-});
-
-function createTimerCntrlInterval() {
-  let set = () => {
-    let current = new Date();
-    current.setTime(current.getTime() + timer.pomo);
-
-    let futureTime = current.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    timerCntrl.innerText = `Now -> ${futureTime}`;
+  const Mode = {
+    POMO: "pomo",
+    BREAK: "break",
   };
-  set();
-  timerCntrlInterval = setInterval(set, 1000);
-}
 
-function clearTimerCntrlInterval() {
-  if (timerCntrlInterval) clearInterval(timerCntrlInterval);
+  let timer = {
+    state: State.IDLE,
+    mode: Mode.POMO,
+    break: timeToMillis(0, 5, 0),
+    pomo: timeToMillis(0, 0.1, 0),
+    // --------------------------- //
+    elapsed: null,
+    startTime: null,
+    trackedTask: null,
+  };
 
-  timerCntrl.innerText = "ticking";
-}
+  function makeTask(name, color, records, archived = false, deleted = false) {
+    return {
+      name,
+      color,
+      records,
+      archived,
+      deleted,
+      node: undefined,
+    };
+  }
 
-function editPomo() {
-  pomoEditMenu.showModal();
-}
+  function makeTimeRecord(
+    startDateOffset,
+    timeWorked,
+    hoursOffset = 0,
+    minutesOffset = 0,
+    secondsOffset = 0,
+  ) {
+    let startDate = new Date();
+    startDate.setDate(startDate.getDate() + startDateOffset);
+    startDate.setHours(hoursOffset);
+    startDate.setMinutes(minutesOffset);
+    startDate.setSeconds(secondsOffset);
 
-function appendTaskToDOM(task) {
-  let newTask = taskTemplate.content.cloneNode(true);
+    let endDate = new Date(startDate);
+    endDate.setTime(endDate.getTime() + timeWorked);
+    return { startDate, endDate };
+  }
 
-  newTask
-    .querySelectorAll("svg")
-    .forEach((t) => (t.querySelector("path").style.fill = task.color));
-
-  newTask.querySelector(".task_name").innerHTML = task.name;
-
-  // calculate time here:
-  let timeSpentToday = task.records
-    .filter(
-      // get today's records only
-      (record) => record.startDate.getDate() == new Date().getDate(),
-    )
-    .map(
-      // calculate time spent
-      (record) => record.endDate - record.startDate,
-    )
-    .reduce(
-      // add up all the time spent
-      (acc, record) => acc + record,
-      0, // set inital value to 0 - so we don't error when arr is empty
-    );
-
-  newTask.querySelector(".task__time-spent").innerHTML =
-    renderTime(timeSpentToday);
-
-  let button = newTask.querySelector(".button");
-
-  button.addEventListener("click", () => {
-    let cl = button.querySelector("svg:not(.deactive)").classList;
-    if (cl.contains("play")) {
-      taskButtonPlay(task);
-    } else if (cl.contains("pause")) {
-      taskButtonPause();
-    } else if (cl.contains("stop")) {
-      taskButtonStop();
-    }
-  });
-
-  taskList.appendChild(newTask);
-  task.node = taskList.lastElementChild;
-}
-
-function taskButtonPlay(task) {
-  console.assert(timer.mode != State.TICKING, {
-    mode: timer.mode,
-    errorMsg: "trying to start timer that has already started...",
-  });
-
-  // set focusTxt
-  focusTxt.innerHTML = task.name;
-  focusTxt.style.color = task.color;
-
-  // clear timerCntrl
-  clearTimerCntrlInterval();
-
-  // set timerwheel to non-clickable
-  timerWheel.classList.remove("hoverfx");
-  timerWheel.classList.add("non-clickable");
-
-  // set all buttons to opacious and non-clickable
-  Array.from(taskList.children)
-    .filter((t) => t != task.node)
-    .forEach((t) => {
-      t.classList.add("opacious");
-      let button = t.querySelector(".button");
-      button.classList.remove("hoverfx");
-      button.classList.add("non-clickable");
-    });
-
-  // Play -> Pause button
-  task.node.querySelector(".pause").classList.remove("deactive");
-  task.node.querySelector(".play").classList.add("deactive");
-
-  // set timer info
-  timer.startTime = Date.now();
-  timer.state = State.TICKING;
-  timer.trackedTask = task;
-
-  requestAnimationFrame(tick);
-}
-
-function taskButtonStop() {
-  console.assert(timer.mode != State.IDLE, {
-    mode: timer.mode,
-    errorMsg: "trying to stop timer that hasn't started...",
-  });
+  let tasks = [];
+  let taskList = document.getElementById("task-list");
+  let taskTemplate = document.getElementById("task-template");
+  let totalTime = document.getElementById("time-total");
+  let timerTxt = document.getElementById("timer");
+  let timerWheel = document.getElementById("circle-timer");
+  let focusTxt = document.getElementById("focus");
+  let pomoEditMenu = document.getElementById("edit-pomo");
+  let pomoLengthInput = document.getElementById("pomoLength");
+  let breakLengthInput = document.getElementById("breakLength");
+  let timerCntrl = document.getElementById("timer-cntrl");
+  let timerCntrlInterval = null;
   createTimerCntrlInterval();
 
-  timer.trackedTask.records.push({
-    startDate: new Date(timer.startTime),
-    endDate: new Date(timer.startTime + timer.elapsed),
+  timerWheel.addEventListener("click", editPomo);
+  pomoLengthInput.value = timer.pomo / 1000 / 60;
+  breakLengthInput.value = timer.break / 1000 / 60;
+
+  pomoLengthInput.addEventListener("input", (val) => {
+    timer.pomo = val.target.value * 60 * 1000;
+    timerTxt.innerHTML = renderTime(timer.pomo);
   });
 
-  // TODO: change this into a function
-  // Also this is a little broken because it doesn't account
-  // for records that span for multiple days...
-  let timeSpentToday = timer.trackedTask.records
-    .filter(
-      // get today's records only
-      (record) => record.startDate.getDate() == new Date().getDate(),
-    )
-    .map(
-      // calculate time spent
-      (record) => record.endDate - record.startDate,
-    )
-    .reduce(
-      // add up all the time spent
-      (acc, record) => acc + record,
-      0, // set inital value to 0 - so we don't error when arr is empty
-    );
+  breakLengthInput.addEventListener("input", (val) => {
+    timer.break = val.target.value * 60 * 1000;
+  });
 
-  timer.trackedTask.node.querySelector(".task__time-spent").innerHTML =
-    renderTime(timeSpentToday);
+  function createTimerCntrlInterval() {
+    let set = () => {
+      let current = new Date();
+      current.setTime(current.getTime() + timer.pomo);
 
-  timerWheel.classList.add("hoverfx");
-  timerWheel.classList.remove("non-clickable");
-  Array.from(taskList.children)
-    .filter((t) => t != timer.trackedTask.node)
-    .forEach((t) => {
-      t.classList.remove("opacious");
-      let button = t.querySelector(".button");
-      button.classList.add("hoverfx");
-      button.classList.remove("non-clickable");
+      let futureTime = current.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      timerCntrl.innerText = `Now -> ${futureTime}`;
+    };
+    set();
+    timerCntrlInterval = setInterval(set, 1000);
+  }
+
+  function clearTimerCntrlInterval() {
+    if (timerCntrlInterval) clearInterval(timerCntrlInterval);
+
+    timerCntrl.innerText = "ticking";
+  }
+
+  function editPomo() {
+    pomoEditMenu.showModal();
+  }
+
+  function appendTaskToDOM(task) {
+    let newTask = taskTemplate.content.cloneNode(true);
+
+    newTask
+      .querySelectorAll("svg")
+      .forEach((t) => (t.querySelector("path").style.fill = task.color));
+
+    newTask.querySelector(".task_name").innerHTML = task.name;
+
+    // calculate time here:
+    let timeSpentToday = task.records
+      .filter(
+        // get today's records only
+        (record) => record.startDate.getDate() == new Date().getDate(),
+      )
+      .map(
+        // calculate time spent
+        (record) => record.endDate - record.startDate,
+      )
+      .reduce(
+        // add up all the time spent
+        (acc, record) => acc + record,
+        0, // set inital value to 0 - so we don't error when arr is empty
+      );
+
+    newTask.querySelector(".task__time-spent").innerHTML =
+      renderTime(timeSpentToday);
+
+    let button = newTask.querySelector(".button");
+
+    button.addEventListener("click", () => {
+      let cl = button.querySelector("svg:not(.deactive)").classList;
+      if (cl.contains("play")) {
+        taskButtonPlay(task);
+      } else if (cl.contains("pause")) {
+        taskButtonPause();
+      } else if (cl.contains("stop")) {
+        taskButtonStop();
+      }
     });
-  timer.trackedTask.node.querySelector(".pause").classList.add("deactive");
-  timer.trackedTask.node.querySelector(".play").classList.remove("deactive");
-  timer.state = State.IDLE;
-  focusTxt.style.color = window
-    .getComputedStyle(document.body)
-    .getPropertyValue("--main-text-color");
-  focusTxt.innerHTML = "Focus time";
-  timer.startTime = null;
-  timer.elapsed = null;
-  timer.trackedTask = null;
-  resetWheel();
-  timerTxt.innerHTML = renderTime(timer.pomo);
-  timerTxt.classList.remove("positive");
-}
 
-function taskButtonPause() {
-  // just call this for now... until actual pause logic is complete.
-  taskButtonStop();
-}
-
-function calculateTotalTime(date) {
-  return tasks
-    .map((t) => t.records)
-    .flat()
-    .filter((record) => record.startDate.getDate() == date)
-    .map((record) => record.endDate - record.startDate)
-    .reduce((acc, record) => acc + record);
-}
-
-// this will eventually be taken from the localStorage
-// we are creating tasks here in situ for testing purposes only.
-// we will use a similar method as this to actually create new tasks.
-tasks.push(
-  makeTask("LeetCode", "#34c759", [
-    makeTimeRecord(-1, timeToMillis(0, 25, 2)),
-    makeTimeRecord(0, timeToMillis(1, 30, 2)),
-    makeTimeRecord(0, timeToMillis(2, 30, 2), 4),
-  ]),
-);
-tasks.push(
-  makeTask("Signals", "#cb30e0", [
-    makeTimeRecord(-2, timeToMillis(3, 6, 2)),
-    makeTimeRecord(0, timeToMillis(0, 6, 2)),
-  ]),
-);
-tasks.push(makeTask("C++", "#ff8d28", []));
-tasks.push(makeTask("Better Pomo", "#ff383c", []));
-
-tasks.forEach((t) => appendTaskToDOM(t));
-totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
-
-// --pomo-wheel-color: var(--gruber-darker-yellow);
-// --break-wheel-color: var(--gruber-darker-niagara);
-// --wheel-bg-color: var(--main-bg-color);
-let timerWheelCS = getComputedStyle(timerWheel);
-let pomoWheelColor = timerWheelCS.getPropertyValue("--pomo-wheel-color");
-let breakWheelColor = timerWheelCS.getPropertyValue("--break-wheel-color");
-let wheelBgColor = timerWheelCS.getPropertyValue("--wheel-bg-color");
-
-timerTxt.innerHTML = renderTime(timer.pomo);
-
-function renderTime(millis, ceil = false) {
-  let seconds = millis / 1000;
-  if (ceil) seconds = Math.ceil(seconds);
-  else seconds = Math.floor(seconds);
-
-  let minutes = Math.floor(seconds / 60);
-  let hours = Math.floor(minutes / 60);
-
-  let visible_seconds = String(seconds % 60).padStart(2, "0");
-  let visible_minutes = String(minutes % 60).padStart(2, "0");
-  let visible_hours = String(hours).padStart(2, "0");
-
-  return `${visible_hours}:${visible_minutes}:${visible_seconds}`;
-}
-
-function tick() {
-  if (timer.state !== State.TICKING) {
-    return;
+    taskList.appendChild(newTask);
+    task.node = taskList.lastElementChild;
   }
-  timer.elapsed = Date.now() - timer.startTime;
 
-  let remaining = timer.pomo - timer.elapsed;
-  let overflowed = remaining < 0;
+  function taskButtonPlay(task) {
+    console.assert(timer.mode != State.TICKING, {
+      mode: timer.mode,
+      errorMsg: "trying to start timer that has already started...",
+    });
 
-  if (overflowed) {
-    let renderedTime = renderTime(Math.abs(remaining), false);
-    timerTxt.classList.add("positive");
-    timerTxt.innerHTML = renderedTime;
-  } else {
+    // set focusTxt
+    focusTxt.innerHTML = task.name;
+    focusTxt.style.color = task.color;
+
+    // clear timerCntrl
+    clearTimerCntrlInterval();
+
+    // set timerwheel to non-clickable
+    timerWheel.classList.remove("hoverfx");
+    timerWheel.classList.add("non-clickable");
+
+    // set all buttons to opacious and non-clickable
+    Array.from(taskList.children)
+      .filter((t) => t != task.node)
+      .forEach((t) => {
+        t.classList.add("opacious");
+        let button = t.querySelector(".button");
+        button.classList.remove("hoverfx");
+        button.classList.add("non-clickable");
+      });
+
+    // Play -> Pause button
+    task.node.querySelector(".pause").classList.remove("deactive");
+    task.node.querySelector(".play").classList.add("deactive");
+
+    // set timer info
+    timer.startTime = Date.now();
+    timer.state = State.TICKING;
+    timer.trackedTask = task;
+
+    requestAnimationFrame(tick);
+  }
+
+  function taskButtonStop() {
+    console.assert(timer.mode != State.IDLE, {
+      mode: timer.mode,
+      errorMsg: "trying to stop timer that hasn't started...",
+    });
+    createTimerCntrlInterval();
+
+    timer.trackedTask.records.push({
+      startDate: new Date(timer.startTime),
+      endDate: new Date(timer.startTime + timer.elapsed),
+    });
+
+    // TODO: change this into a function
+    // Also this is a little broken because it doesn't account
+    // for records that span for multiple days...
+    let timeSpentToday = timer.trackedTask.records
+      .filter(
+        // get today's records only
+        (record) => record.startDate.getDate() == new Date().getDate(),
+      )
+      .map(
+        // calculate time spent
+        (record) => record.endDate - record.startDate,
+      )
+      .reduce(
+        // add up all the time spent
+        (acc, record) => acc + record,
+        0, // set inital value to 0 - so we don't error when arr is empty
+      );
+
+    timer.trackedTask.node.querySelector(".task__time-spent").innerHTML =
+      renderTime(timeSpentToday);
+
+    timerWheel.classList.add("hoverfx");
+    timerWheel.classList.remove("non-clickable");
+    Array.from(taskList.children)
+      .filter((t) => t != timer.trackedTask.node)
+      .forEach((t) => {
+        t.classList.remove("opacious");
+        let button = t.querySelector(".button");
+        button.classList.add("hoverfx");
+        button.classList.remove("non-clickable");
+      });
+    timer.trackedTask.node.querySelector(".pause").classList.add("deactive");
+    timer.trackedTask.node.querySelector(".play").classList.remove("deactive");
+    timer.state = State.IDLE;
+    focusTxt.style.color = window
+      .getComputedStyle(document.body)
+      .getPropertyValue("--main-text-color");
+    focusTxt.innerHTML = "Focus time";
+    timer.startTime = null;
+    timer.elapsed = null;
+    timer.trackedTask = null;
+    resetWheel();
+    timerTxt.innerHTML = renderTime(timer.pomo);
     timerTxt.classList.remove("positive");
-    timerTxt.innerHTML = renderTime(Math.abs(remaining), true);
   }
 
-  let step = 360 / timer.pomo;
-  let deg = step * (timer.elapsed % timer.pomo);
+  function taskButtonPause() {
+    // just call this for now... until actual pause logic is complete.
+    taskButtonStop();
+  }
 
-  let numRotations = Math.floor(timer.elapsed / timer.pomo);
+  function calculateTotalTime(date) {
+    return tasks
+      .map((t) => t.records)
+      .flat()
+      .filter((record) => record.startDate.getDate() == date)
+      .map((record) => record.endDate - record.startDate)
+      .reduce((acc, record) => acc + record);
+  }
 
-  let currentFgColor =
-    timer.mode === Mode.POMO ? pomoWheelColor : breakWheelColor;
+  // this will eventually be taken from the localStorage
+  // we are creating tasks here in situ for testing purposes only.
+  // we will use a similar method as this to actually create new tasks.
+  tasks.push(
+    makeTask("LeetCode", "#34c759", [
+      makeTimeRecord(-1, timeToMillis(0, 25, 2)),
+      makeTimeRecord(0, timeToMillis(1, 30, 2)),
+      makeTimeRecord(0, timeToMillis(2, 30, 2), 4),
+    ]),
+  );
+  tasks.push(
+    makeTask("Signals", "#cb30e0", [
+      makeTimeRecord(-2, timeToMillis(3, 6, 2)),
+      makeTimeRecord(0, timeToMillis(0, 6, 2)),
+    ]),
+  );
+  tasks.push(makeTask("C++", "#ff8d28", []));
+  tasks.push(makeTask("Better Pomo", "#ff383c", []));
 
-  if (numRotations % 2 == 0) {
+  tasks.forEach((t) => appendTaskToDOM(t));
+  totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
+
+  // --pomo-wheel-color: var(--gruber-darker-yellow);
+  // --break-wheel-color: var(--gruber-darker-niagara);
+  // --wheel-bg-color: var(--main-bg-color);
+  let timerWheelCS = getComputedStyle(timerWheel);
+  let pomoWheelColor = timerWheelCS.getPropertyValue("--pomo-wheel-color");
+  let breakWheelColor = timerWheelCS.getPropertyValue("--break-wheel-color");
+  let wheelBgColor = timerWheelCS.getPropertyValue("--wheel-bg-color");
+
+  timerTxt.innerHTML = renderTime(timer.pomo);
+
+  function renderTime(millis, ceil = false) {
+    let seconds = millis / 1000;
+    if (ceil) seconds = Math.ceil(seconds);
+    else seconds = Math.floor(seconds);
+
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+
+    let visible_seconds = String(seconds % 60).padStart(2, "0");
+    let visible_minutes = String(minutes % 60).padStart(2, "0");
+    let visible_hours = String(hours).padStart(2, "0");
+
+    return `${visible_hours}:${visible_minutes}:${visible_seconds}`;
+  }
+
+  function tick() {
+    if (timer.state !== State.TICKING) {
+      return;
+    }
+    timer.elapsed = Date.now() - timer.startTime;
+
+    let remaining = timer.pomo - timer.elapsed;
+    let overflowed = remaining < 0;
+
+    if (overflowed) {
+      let renderedTime = renderTime(Math.abs(remaining), false);
+      timerTxt.classList.add("positive");
+      timerTxt.innerHTML = renderedTime;
+    } else {
+      timerTxt.classList.remove("positive");
+      timerTxt.innerHTML = renderTime(Math.abs(remaining), true);
+    }
+
+    let step = 360 / timer.pomo;
+    let deg = step * (timer.elapsed % timer.pomo);
+
+    let numRotations = Math.floor(timer.elapsed / timer.pomo);
+
+    let currentFgColor =
+      timer.mode === Mode.POMO ? pomoWheelColor : breakWheelColor;
+
+    if (numRotations % 2 == 0) {
+      timerWheel.style.setProperty("--bg-color", wheelBgColor);
+      timerWheel.style.setProperty("--fg-color", currentFgColor);
+    } else {
+      timerWheel.style.setProperty("--bg-color", currentFgColor);
+      timerWheel.style.setProperty("--fg-color", wheelBgColor);
+    }
+
+    timerWheel.style.setProperty("--progress", `${deg}deg`);
+    requestAnimationFrame(tick);
+  }
+
+  function resetWheel() {
+    timerWheel.style.setProperty("--progress", "0deg");
     timerWheel.style.setProperty("--bg-color", wheelBgColor);
-    timerWheel.style.setProperty("--fg-color", currentFgColor);
-  } else {
-    timerWheel.style.setProperty("--bg-color", currentFgColor);
-    timerWheel.style.setProperty("--fg-color", wheelBgColor);
+    timerWheel.style.setProperty("--fg-color", pomoWheelColor);
   }
-
-  timerWheel.style.setProperty("--progress", `${deg}deg`);
-  requestAnimationFrame(tick);
-}
-
-function resetWheel() {
-  timerWheel.style.setProperty("--progress", "0deg");
-  timerWheel.style.setProperty("--bg-color", wheelBgColor);
-  timerWheel.style.setProperty("--fg-color", pomoWheelColor);
-}
+};
