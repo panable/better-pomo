@@ -99,7 +99,7 @@ body {
   opacity: 0.8;
 }
 
-#edit-tasks {
+#edit-tasks-btn {
   display: flex;
   gap: 1rem;
   margin-inline: 1rem;
@@ -108,6 +108,16 @@ body {
   width: fit-content;
   border-radius: 1rem;
   user-select: none;
+}
+
+.edit-tasks-section__wrapper {
+  display: block;
+  width: 25rem;
+  padding-top: 2rem;
+  margin-inline: auto;
+}
+#edit-tasks__back-btn {
+  margin-inline: 1rem;
 }
 
 a {

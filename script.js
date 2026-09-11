@@ -65,6 +65,14 @@
   let pomoLengthInput = document.getElementById("pomoLength");
   let breakLengthInput = document.getElementById("breakLength");
   let timerCntrl = document.getElementById("timer-cntrl");
+  let pomoAppSection = document.getElementById("pomo-app-section");
+  let editTasksSection = document.getElementById("edit-tasks-section");
+  let editTasksBtn = document.getElementById("edit-tasks-btn");
+  let editTasksBackBtn = document.getElementById("edit-tasks__back-btn");
+
+  editTasksBtn.addEventListener("click", editTasksBtnHandler);
+  editTasksBackBtn.addEventListener("click", editTasksBackBtnHandler);
+
   let timerCntrlInterval = null;
   createTimerCntrlInterval();
 
@@ -80,6 +88,16 @@
   breakLengthInput.addEventListener("input", (val) => {
     timer.break = val.target.value * 60 * 1000;
   });
+
+  function editTasksBackBtnHandler() {
+    pomoAppSection.classList.remove("deactive");
+    editTasksSection.classList.add("deactive");
+  }
+
+  function editTasksBtnHandler() {
+    pomoAppSection.classList.add("deactive");
+    editTasksSection.classList.remove("deactive");
+  }
 
   function createTimerCntrlInterval() {
     let set = () => {
