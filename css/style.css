@@ -103,7 +103,7 @@ body {
   display: flex;
   gap: 1rem;
   margin-inline: 1rem;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
   background-color: var(--gruber-darker-bgp1);
   width: fit-content;
   border-radius: 1rem;
@@ -111,10 +111,8 @@ body {
 }
 
 .edit-tasks-section__wrapper {
-  display: block;
-  width: 25rem;
-  padding-top: 2rem;
-  margin-inline: auto;
+  padding-block: 1rem;
+  background-color: var(--gruber-darker-bgp1);
 }
 
 #edit-tasks__back-btn {
@@ -125,7 +123,8 @@ body {
 
 .edit-tasks__heading {
   display: flex;
-  margin-inline: 1rem;
+  width: 25rem;
+  margin-inline: auto;
 }
 
 .edit-tasks__heading-text {
