@@ -137,7 +137,7 @@
     let timeSpentToday = task.records
       .filter(
         // get today's records only
-        (record) => record.startDate.getDate() == new Date().getDate(),
+        (record) => record.startDate.getDate() === new Date().getDate(),
       )
       .map(
         // calculate time spent
@@ -170,7 +170,7 @@
   }
 
   function taskButtonPlay(task) {
-    console.assert(timer.mode != State.TICKING, {
+    console.assert(timer.mode !== State.TICKING, {
       mode: timer.mode,
       errorMsg: "trying to start timer that has already started...",
     });
@@ -188,7 +188,7 @@
 
     // set all buttons to opacious and non-clickable
     Array.from(taskList.children)
-      .filter((t) => t != task.node)
+      .filter((t) => t !== task.node)
       .forEach((t) => {
         t.classList.add("opacious");
         let button = t.querySelector(".button");
@@ -209,7 +209,7 @@
   }
 
   function taskButtonStop() {
-    console.assert(timer.mode != State.IDLE, {
+    console.assert(timer.mode !== State.IDLE, {
       mode: timer.mode,
       errorMsg: "trying to stop timer that hasn't started...",
     });
@@ -226,7 +226,7 @@
     let timeSpentToday = timer.trackedTask.records
       .filter(
         // get today's records only
-        (record) => record.startDate.getDate() == new Date().getDate(),
+        (record) => record.startDate.getDate() === new Date().getDate(),
       )
       .map(
         // calculate time spent
@@ -235,7 +235,7 @@
       .reduce(
         // add up all the time spent
         (acc, record) => acc + record,
-        0, // set inital value to 0 - so we don't error when arr is empty
+        0, // set initial value to 0 - so we don't error when arr is empty
       );
 
     timer.trackedTask.node.querySelector(".task__time-spent").innerHTML =
@@ -244,7 +244,7 @@
     timerWheel.classList.add("hoverfx");
     timerWheel.classList.remove("non-clickable");
     Array.from(taskList.children)
-      .filter((t) => t != timer.trackedTask.node)
+      .filter((t) => t !== timer.trackedTask.node)
       .forEach((t) => {
         t.classList.remove("opacious");
         let button = t.querySelector(".button");
@@ -275,7 +275,7 @@
     return tasks
       .map((t) => t.records)
       .flat()
-      .filter((record) => record.startDate.getDate() == date)
+      .filter((record) => record.startDate.getDate() === date)
       .map((record) => record.endDate - record.startDate)
       .reduce((acc, record) => acc + record);
   }
@@ -353,7 +353,7 @@
     let currentFgColor =
       timer.mode === Mode.POMO ? pomoWheelColor : breakWheelColor;
 
-    if (numRotations % 2 == 0) {
+    if (numRotations % 2 === 0) {
       timerWheel.style.setProperty("--bg-color", wheelBgColor);
       timerWheel.style.setProperty("--fg-color", currentFgColor);
     } else {
