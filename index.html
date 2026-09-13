@@ -14,7 +14,7 @@
 </head>
 <body>
 <main>
-  <section class="" id="pomo-app-section">
+  <section class="deactive" id="pomo-app-section">
     <dialog id="edit-pomo">
       <div class="edit-pomo-heading">
         <div class="edit-pomo-heading-text">Edit menu</div>
@@ -115,8 +115,8 @@
       </div>
     </section>
   </section>
-  <section class="deactive" id="edit-tasks-section">
-    <div class="edit-tasks-section__wrapper">
+  <section class="" id="edit-tasks-section">
+    <header class="edit-tasks__heading-wrapper">
       <div class="edit-tasks__heading">
         <div class="button hoverfx" id="edit-tasks__back-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
@@ -125,7 +125,28 @@
         </div>
         <div class="edit-tasks__heading-text">Edit tasks</div>
       </div>
-    </div>
+    </header>
+    <section class="edit-tasks__content">
+      <div class="edit-tasks__current-tasks-wrapper">
+        <div class="edit-tasks__current-tasks-heading">
+          <h1>Current Tasks:</h1>
+        </div>
+        <div class="tasks" id="edit-current-tasks-list">
+          <template id="edit-task-template">
+            <div class="task">
+              <div class="task__color"></div>
+                <!--suppress HtmlFormInputWithoutLabel -->
+              <input class="task__name" type="text">
+            </div>
+          </template>
+        </div>
+        <div class="edit-tasks__current-tasks-add-task">
+        </div>
+      </div>
+      <div class="edit-tasks__archived-tasks-wrapper">
+        <h1>Archived Tasks:</h1>
+      </div>
+    </section>
   </section>
 </main>
 <script src="script.js"></script>

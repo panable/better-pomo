@@ -51,7 +51,7 @@
 
     let endDate = new Date(startDate);
     endDate.setTime(endDate.getTime() + timeWorked);
-    return { startDate, endDate };
+    return {startDate, endDate};
   }
 
   let tasks = [];
@@ -69,6 +69,9 @@
   let editTasksSection = document.getElementById("edit-tasks-section");
   let editTasksBtn = document.getElementById("edit-tasks-btn");
   let editTasksBackBtn = document.getElementById("edit-tasks__back-btn");
+  let editTaskTemplate = document.getElementById("edit-task-template");
+  let editCurrentTasksList = document.getElementById("edit-current-tasks-list");
+  // let editArchivedTasksList = document.getElementById("edit-archived-tasks-list");
 
   editTasksBtn.addEventListener("click", editTasksBtnHandler);
   editTasksBackBtn.addEventListener("click", editTasksBackBtnHandler);
@@ -88,6 +91,36 @@
   breakLengthInput.addEventListener("input", (val) => {
     timer.break = val.target.value * 60 * 1000;
   });
+
+  // this will eventually be taken from the localStorage
+  // we are creating tasks here in situ for testing purposes only.
+  // we will use a similar method as this to actually create new tasks.
+  tasks.push(
+    makeTask("LeetCode", "#34c759", [
+      makeTimeRecord(-1, timeToMillis(0, 25, 2)),
+      makeTimeRecord(0, timeToMillis(1, 30, 2)),
+      makeTimeRecord(0, timeToMillis(2, 30, 2), 4),
+    ]),
+  );
+  tasks.push(
+    makeTask("Signals", "#cb30e0", [
+      makeTimeRecord(-2, timeToMillis(3, 6, 2)),
+      makeTimeRecord(0, timeToMillis(0, 6, 2)),
+    ]),
+  );
+  tasks.push(makeTask("C++", "#ff8d28", []));
+  tasks.push(makeTask("Better Pomo", "#ff383c", []));
+
+  tasks.forEach((t) => appendTaskToDOM(t));
+  tasks.forEach((t) => appendEditTaskToDom(t));
+  totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
+
+  let timerWheelCS = getComputedStyle(timerWheel);
+  let pomoWheelColor = timerWheelCS.getPropertyValue("--pomo-wheel-color");
+  let breakWheelColor = timerWheelCS.getPropertyValue("--break-wheel-color");
+  let wheelBgColor = timerWheelCS.getPropertyValue("--wheel-bg-color");
+
+  timerTxt.innerHTML = renderTime(timer.pomo);
 
   function editTasksBackBtnHandler() {
     pomoAppSection.classList.remove("deactive");
@@ -122,6 +155,30 @@
 
   function editPomo() {
     pomoEditMenu.showModal();
+  }
+
+  // Eventually need to replace tree here...
+  function appendEditTaskToDom(task) {
+    let newTask = editTaskTemplate.content.cloneNode(true);
+
+    let taskInput = newTask.querySelector(".task__name");
+
+    // Make escape clear focus from input element
+    taskInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        this.blur();
+      }
+    });
+
+    taskInput.addEventListener("input", (e) => {
+      task.name = e.target.value;
+      taskList.replaceChildren();
+      tasks.forEach((t) => appendTaskToDOM(t));
+    })
+    taskInput.value = task.name;
+    newTask.querySelector(".task__color").style.backgroundColor = task.color;
+    editCurrentTasksList.appendChild(newTask);
+    // Handle on-click stuff here too
   }
 
   function appendTaskToDOM(task) {
@@ -279,38 +336,6 @@
       .map((record) => record.endDate - record.startDate)
       .reduce((acc, record) => acc + record);
   }
-
-  // this will eventually be taken from the localStorage
-  // we are creating tasks here in situ for testing purposes only.
-  // we will use a similar method as this to actually create new tasks.
-  tasks.push(
-    makeTask("LeetCode", "#34c759", [
-      makeTimeRecord(-1, timeToMillis(0, 25, 2)),
-      makeTimeRecord(0, timeToMillis(1, 30, 2)),
-      makeTimeRecord(0, timeToMillis(2, 30, 2), 4),
-    ]),
-  );
-  tasks.push(
-    makeTask("Signals", "#cb30e0", [
-      makeTimeRecord(-2, timeToMillis(3, 6, 2)),
-      makeTimeRecord(0, timeToMillis(0, 6, 2)),
-    ]),
-  );
-  tasks.push(makeTask("C++", "#ff8d28", []));
-  tasks.push(makeTask("Better Pomo", "#ff383c", []));
-
-  tasks.forEach((t) => appendTaskToDOM(t));
-  totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
-
-  // --pomo-wheel-color: var(--gruber-darker-yellow);
-  // --break-wheel-color: var(--gruber-darker-niagara);
-  // --wheel-bg-color: var(--main-bg-color);
-  let timerWheelCS = getComputedStyle(timerWheel);
-  let pomoWheelColor = timerWheelCS.getPropertyValue("--pomo-wheel-color");
-  let breakWheelColor = timerWheelCS.getPropertyValue("--break-wheel-color");
-  let wheelBgColor = timerWheelCS.getPropertyValue("--wheel-bg-color");
-
-  timerTxt.innerHTML = renderTime(timer.pomo);
 
   function renderTime(millis, ceil = false) {
     let seconds = millis / 1000;
