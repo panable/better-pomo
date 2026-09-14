@@ -253,6 +253,10 @@
         button.classList.add("non-clickable");
       });
 
+    editTasksBtn.classList.remove("hoverfx");
+    editTasksBtn.classList.add("non-clickable");
+    editTasksBtn.classList.add("opacious");
+
     // Play -> Pause button
     task.node.querySelector(".pause").classList.remove("deactive");
     task.node.querySelector(".play").classList.add("deactive");
@@ -306,8 +310,14 @@
         t.classList.remove("opacious");
         let button = t.querySelector(".button");
         button.classList.add("hoverfx");
+        button.classList.remove("opacious");
         button.classList.remove("non-clickable");
       });
+
+    editTasksBtn.classList.add("hoverfx");
+    editTasksBtn.classList.remove("non-clickable");
+    editTasksBtn.classList.remove("opacious");
+
     timer.trackedTask.node.querySelector(".pause").classList.add("deactive");
     timer.trackedTask.node.querySelector(".play").classList.remove("deactive");
     timer.state = State.IDLE;
