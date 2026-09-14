@@ -214,7 +214,7 @@
     button.addEventListener("click", () => {
       let cl = button.querySelector("svg:not(.deactive)").classList;
       if (cl.contains("play")) {
-        taskButtonPlay(task);
+        taskButtonStart(task);
       } else if (cl.contains("pause")) {
         taskButtonPause();
       } else if (cl.contains("stop")) {
@@ -226,7 +226,7 @@
     task.node = taskList.lastElementChild;
   }
 
-  function taskButtonPlay(task) {
+  function taskButtonStart(task) {
     console.assert(timer.mode !== State.TICKING, {
       mode: timer.mode,
       errorMsg: "trying to start timer that has already started...",
