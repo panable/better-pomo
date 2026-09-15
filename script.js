@@ -111,8 +111,8 @@
   tasks.push(makeTask("C++", "#ff8d28", []));
   tasks.push(makeTask("Better Pomo", "#ff383c", []));
 
-  tasks.forEach((t) => appendTaskToDOM(t));
-  tasks.forEach((t) => appendEditTaskToDom(t));
+  tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
+  tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
   totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
 
   let timerWheelCS = getComputedStyle(timerWheel);
@@ -173,7 +173,7 @@
     taskInput.addEventListener("input", (e) => {
       task.name = e.target.value;
       taskList.replaceChildren();
-      tasks.forEach((t) => appendTaskToDOM(t));
+      tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
     })
     taskInput.value = task.name;
     newTask.querySelector(".task__color").style.backgroundColor = task.color;
