@@ -165,7 +165,7 @@
 
     // Make escape clear focus from input element
     taskInput.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' || event.key === 'Enter') {
         this.blur();
       }
     });
