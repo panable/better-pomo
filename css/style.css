@@ -354,9 +354,20 @@ hr {
   justify-items: center;
 }
 
+.task__name:hover {
+  background-color: var(--main-bg-color);
+  outline: 0.15rem solid var(--gruber-darker-bgp4);
+}
+
+input:focus {
+  outline: 0.15rem solid var(--gruber-darker-yellow) !important;
+  box-shadow: none;
+}
+
 .task__name {
   font-size: 1.2rem;
-  border: 0;
+  border: 0.1rem solid var(--gruber-darker-bgp2);
+  padding: 0.5rem;
 }
 
 .task__color {
