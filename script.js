@@ -162,6 +162,9 @@
     let newTask = editTaskTemplate.content.cloneNode(true);
 
     let taskInput = newTask.querySelector(".task__name");
+    let editBtn = newTask.querySelector(".edit-btn");
+    let deleteBtn = newTask.querySelector(".delete-btn");
+    let archiveBtn = newTask.querySelector(".archive-btn");
 
     // Make escape clear focus from input element
     taskInput.addEventListener('keydown', function (event) {
@@ -175,6 +178,33 @@
       taskList.replaceChildren();
       tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
     })
+
+    editBtn.addEventListener("click", () => {
+      taskInput.focus();
+      taskInput.select();
+    });
+
+    deleteBtn.addEventListener("click", () => {
+      editCurrentTasksList.replaceChildren();
+      tasks = tasks.filter(item => item !== task);
+
+      // TODO: REPLACE THIS SYSTEM WITH EVENTS
+      // I AM A SOVEREIGN INDIVIDUAL AND I CAN WRITE CODE LIKE THIS
+      taskList.replaceChildren();
+      editCurrentTasksList.replaceChildren();
+      tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
+      tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
+    });
+
+    archiveBtn.addEventListener("click", () => {
+      task.archived = true;
+
+      taskList.replaceChildren();
+      editCurrentTasksList.replaceChildren();
+      tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
+      tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
+    });
+
     taskInput.value = task.name;
     newTask.querySelector(".task__color").style.backgroundColor = task.color;
     editCurrentTasksList.appendChild(newTask);

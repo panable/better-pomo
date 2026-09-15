@@ -121,7 +121,7 @@ body {
   justify-content: center;
 }
 
-.edit-tasks__heading{
+.edit-tasks__heading {
   display: flex;
   width: 25rem;
   margin-inline: auto;
@@ -348,10 +348,27 @@ hr {
   border-radius: 0.5rem;
 }
 
+.button {
+  width: fit-content;
+  height: fit-content;
+}
+
 .task {
   display: flex;
-  gap: 1.5rem;
-  justify-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.left-side {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.right-side {
+  gap: 0.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .task__name:hover {

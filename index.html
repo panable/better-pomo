@@ -134,9 +134,34 @@
         <div class="tasks" id="edit-current-tasks-list">
           <template id="edit-task-template">
             <div class="task">
-              <div class="task__color"></div>
+              <div class="left-side">
+                <div class="task__color"></div>
                 <!--suppress HtmlFormInputWithoutLabel -->
-              <input class="task__name" type="text">
+                <input class="task__name" type="text" autocomplete="off">
+              </div>
+              <div class="right-side">
+                <div class="button edit-btn hoverfx">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24">
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                    <path fill="currentColor"
+                          d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"/>
+                  </svg>
+                </div>
+                <div class="button delete-btn hoverfx">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 1024 1024">
+                    <path d="M0 0h1024v1024H0z" fill="none"/>
+                    <path fill="currentColor"
+                          d="M360 184h-8c4.4 0 8-3.6 8-8zh304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32M731.3 840H292.7l-24.2-512h487z"/>
+                  </svg>
+                </div>
+                <div class="button archive-btn hoverfx">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" viewBox="0 0 24 24">
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                    <path fill="currentColor"
+                          d="M11.288 10.288Q11 10.575 11 11v3.2l-.9-.9q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7l2.6 2.6q.3.3.7.3t.7-.3l2.6-2.6q.275-.275.275-.7t-.275-.7t-.7-.275t-.7.275l-.9.9V11q0-.425-.288-.712T12 10t-.712.288M5 8v11h14V8zm0 13q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V19q0 .825-.587 1.413T19 21zm.4-15h13.2l-.85-1H6.25zm6.6 7.5"/>
+                  </svg>
+                </div>
+              </div>
             </div>
           </template>
         </div>
