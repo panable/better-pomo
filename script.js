@@ -71,6 +71,7 @@
   let editTasksBackBtn = document.getElementById("edit-tasks__back-btn");
   let editTaskTemplate = document.getElementById("edit-task-template");
   let editCurrentTasksList = document.getElementById("edit-current-tasks-list");
+  let createTaskBtn = document.getElementById("create-task-btn");
   // let editArchivedTasksList = document.getElementById("edit-archived-tasks-list");
 
   editTasksBtn.addEventListener("click", editTasksBtnHandler);
@@ -114,6 +115,15 @@
   tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
   tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
   totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
+
+  createTaskBtn.addEventListener("click", () => {
+    tasks.push(makeTask("", "#0088ff", []));
+
+    taskList.replaceChildren();
+    editCurrentTasksList.replaceChildren();
+    tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
+    tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
+  })
 
   let timerWheelCS = getComputedStyle(timerWheel);
   let pomoWheelColor = timerWheelCS.getPropertyValue("--pomo-wheel-color");
