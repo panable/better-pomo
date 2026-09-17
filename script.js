@@ -51,7 +51,7 @@
 
     let endDate = new Date(startDate);
     endDate.setTime(endDate.getTime() + timeWorked);
-    return {startDate, endDate};
+    return { startDate, endDate };
   }
 
   let tasks = [];
@@ -112,18 +112,14 @@
   tasks.push(makeTask("C++", "#ff8d28", []));
   tasks.push(makeTask("Better Pomo", "#ff383c", []));
 
-  tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
-  tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
+  renderAll();
+
   totalTime.innerHTML = renderTime(calculateTotalTime(new Date().getDate()));
 
   createTaskBtn.addEventListener("click", () => {
     tasks.push(makeTask("", "#0088ff", []));
-
-    taskList.replaceChildren();
-    editCurrentTasksList.replaceChildren();
-    tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
-    tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
-  })
+    renderAll();
+  });
 
   let timerWheelCS = getComputedStyle(timerWheel);
   let pomoWheelColor = timerWheelCS.getPropertyValue("--pomo-wheel-color");
@@ -131,6 +127,25 @@
   let wheelBgColor = timerWheelCS.getPropertyValue("--wheel-bg-color");
 
   timerTxt.innerHTML = renderTime(timer.pomo);
+
+  function renderTaskList() {
+    taskList.replaceChildren();
+    tasks
+      .filter((t) => t.archived === false)
+      .forEach((t) => appendTaskToDOM(t));
+  }
+
+  function renderEditTaskList() {
+    editCurrentTasksList.replaceChildren();
+    tasks
+      .filter((t) => t.archived === false)
+      .forEach((t) => appendEditTaskToDom(t));
+  }
+
+  function renderAll() {
+    renderTaskList();
+    renderEditTaskList();
+  }
 
   function editTasksBackBtnHandler() {
     pomoAppSection.classList.remove("deactive");
@@ -177,17 +192,16 @@
     let archiveBtn = newTask.querySelector(".archive-btn");
 
     // Make escape clear focus from input element
-    taskInput.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' || event.key === 'Enter') {
+    taskInput.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" || event.key === "Enter") {
         this.blur();
       }
     });
 
     taskInput.addEventListener("input", (e) => {
       task.name = e.target.value;
-      taskList.replaceChildren();
-      tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
-    })
+      renderTaskList();
+    });
 
     editBtn.addEventListener("click", () => {
       taskInput.focus();
@@ -196,23 +210,16 @@
 
     deleteBtn.addEventListener("click", () => {
       editCurrentTasksList.replaceChildren();
-      tasks = tasks.filter(item => item !== task);
+      tasks = tasks.filter((item) => item !== task);
 
       // TODO: REPLACE THIS SYSTEM WITH EVENTS
       // I AM A SOVEREIGN INDIVIDUAL AND I CAN WRITE CODE LIKE THIS
-      taskList.replaceChildren();
-      editCurrentTasksList.replaceChildren();
-      tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
-      tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
+      renderAll();
     });
 
     archiveBtn.addEventListener("click", () => {
       task.archived = true;
-
-      taskList.replaceChildren();
-      editCurrentTasksList.replaceChildren();
-      tasks.filter((t) => t.archived === false).forEach((t) => appendEditTaskToDom(t));
-      tasks.filter((t) => t.archived === false).forEach((t) => appendTaskToDOM(t));
+      renderAll();
     });
 
     taskInput.value = task.name;
