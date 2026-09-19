@@ -417,5 +417,4 @@ input:focus {
 .edit-tasks__add-task {
   width: 100%;
   user-select: none;
-  /*border-top: 0.1rem solid var(--gruber-darker-bgp2);*/
 }
