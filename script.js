@@ -250,7 +250,7 @@
       .reduce(
         // add up all the time spent
         (acc, record) => acc + record,
-        0, // set inital value to 0 - so we don't error when arr is empty
+        0, // set initial value to 0 - so we don't error when arr is empty
       );
 
     newTask.querySelector(".task__time-spent").innerHTML =
