@@ -72,8 +72,8 @@
   let editTaskTemplate = document.getElementById("edit-task-template");
   let editCurrentTasksList = document.getElementById("edit-current-tasks-list");
   let createTaskBtn = document.getElementById("create-task-btn");
-  // let editArchivedTasksList = document.getElementById("edit-archived-tasks-list");
-
+  let editArchivedTasksList = document.getElementById("edit-archived-tasks-list");
+  let archivedTaskTemplate = document.getElementById("edit-archived-task-template");
   editTasksBtn.addEventListener("click", editTasksBtnHandler);
   editTasksBackBtn.addEventListener("click", editTasksBackBtnHandler);
 
@@ -110,7 +110,7 @@
     ]),
   );
   tasks.push(makeTask("C++", "#ff8d28", []));
-  tasks.push(makeTask("Better Pomo", "#ff383c", []));
+  tasks.push(makeTask("Better Pomo", "#ff383c", [], true));
 
   renderAll();
 
@@ -142,9 +142,17 @@
       .forEach((t) => appendEditTaskToDom(t));
   }
 
+  function renderArchivedTaskList() {
+    editArchivedTasksList.replaceChildren();
+    tasks
+      .filter((t) => t.archived === true)
+      .forEach((t) => appendArchivedTaskToDom(t));
+  }
+
   function renderAll() {
     renderTaskList();
     renderEditTaskList();
+    renderArchivedTaskList();
   }
 
   function editTasksBackBtnHandler() {
@@ -180,6 +188,51 @@
 
   function editPomo() {
     pomoEditMenu.showModal();
+  }
+
+  function appendArchivedTaskToDom(task) {
+    let newTask = archivedTaskTemplate.content.cloneNode(true);
+
+    let taskInput = newTask.querySelector(".task__name");
+    let editBtn = newTask.querySelector(".edit-btn");
+    let deleteBtn = newTask.querySelector(".delete-btn");
+    let archiveBtn = newTask.querySelector(".archive-btn");
+
+    // Make escape clear focus from input element
+    taskInput.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" || event.key === "Enter") {
+        this.blur();
+      }
+    });
+
+    taskInput.addEventListener("input", (e) => {
+      task.name = e.target.value;
+      renderTaskList();
+    });
+
+    editBtn.addEventListener("click", () => {
+      taskInput.focus();
+      taskInput.select();
+    });
+
+    deleteBtn.addEventListener("click", () => {
+      editCurrentTasksList.replaceChildren();
+      tasks = tasks.filter((item) => item !== task);
+
+      // TODO: REPLACE THIS SYSTEM WITH EVENTS
+      // I AM A SOVEREIGN INDIVIDUAL AND I CAN WRITE CODE LIKE THIS
+      renderAll();
+    });
+
+    archiveBtn.addEventListener("click", () => {
+      task.archived = true;
+      renderAll();
+    });
+
+    taskInput.value = task.name;
+    newTask.querySelector(".task__color").style.backgroundColor = task.color;
+    editArchivedTasksList.appendChild(newTask);
+    // Handle on-click stuff here too
   }
 
   // Eventually need to replace tree here...
