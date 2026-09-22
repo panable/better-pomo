@@ -132,6 +132,9 @@ body {
 }
 
 .edit-tasks__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   width: 25rem;
   margin-inline: auto;
 }

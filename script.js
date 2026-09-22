@@ -225,7 +225,7 @@
     });
 
     archiveBtn.addEventListener("click", () => {
-      task.archived = true;
+      task.archived = false;
       renderAll();
     });
 
