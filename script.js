@@ -74,6 +74,8 @@
   let createTaskBtn = document.getElementById("create-task-btn");
   let editArchivedTasksList = document.getElementById("edit-archived-tasks-list");
   let archivedTaskTemplate = document.getElementById("edit-archived-task-template");
+  let buttonCntrl = document.getElementById("button-cntrl");
+
   editTasksBtn.addEventListener("click", editTasksBtnHandler);
   editTasksBackBtn.addEventListener("click", editTasksBackBtnHandler);
 
@@ -166,6 +168,8 @@
   }
 
   function createTimerCntrlInterval() {
+    timerCntrl.classList.remove("deactive");
+    buttonCntrl.classList.add("deactive");
     let set = () => {
       let current = new Date();
       current.setTime(current.getTime() + timer.pomo);
@@ -183,7 +187,9 @@
   function clearTimerCntrlInterval() {
     if (timerCntrlInterval) clearInterval(timerCntrlInterval);
 
-    timerCntrl.innerText = "ticking";
+    // timerCntrl.innerText = "ticking";
+    timerCntrl.classList.add("deactive");
+    buttonCntrl.classList.remove("deactive");
   }
 
   function editPomo() {
