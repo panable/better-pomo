@@ -238,7 +238,6 @@
     taskInput.value = task.name;
     newTask.querySelector(".task__color").style.backgroundColor = task.color;
     editArchivedTasksList.appendChild(newTask);
-    // Handle on-click stuff here too
   }
 
   // Eventually need to replace tree here...
@@ -284,7 +283,6 @@
     taskInput.value = task.name;
     newTask.querySelector(".task__color").style.backgroundColor = task.color;
     editCurrentTasksList.appendChild(newTask);
-    // Handle on-click stuff here too
   }
 
   function appendTaskToDOM(task) {
