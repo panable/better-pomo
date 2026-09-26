@@ -79,6 +79,8 @@ body {
 
 #button-cntrl {
   display: flex;
+  height: 2ch;
+  inset: 0;
 }
 
 .button1 {
@@ -264,6 +266,7 @@ input {
 
 #timer-cntrl {
   font-weight: 100;
+  height: 2ch;
   /* font-size: 0.75rem; */
 }
 
