@@ -75,7 +75,7 @@
   let editArchivedTasksList = document.getElementById("edit-archived-tasks-list");
   let archivedTaskTemplate = document.getElementById("edit-archived-task-template");
   let buttonCntrl = document.getElementById("button-cntrl");
-
+  let stopBtn = document.getElementById("stop-btn");
   editTasksBtn.addEventListener("click", editTasksBtnHandler);
   editTasksBackBtn.addEventListener("click", editTasksBackBtnHandler);
 
@@ -85,6 +85,8 @@
   timerWheel.addEventListener("click", editPomo);
   pomoLengthInput.value = timer.pomo / 1000 / 60;
   breakLengthInput.value = timer.break / 1000 / 60;
+
+  stopBtn.addEventListener("click", taskButtonStop);
 
   pomoLengthInput.addEventListener("input", (val) => {
     timer.pomo = val.target.value * 60 * 1000;
