@@ -189,7 +189,6 @@
   function clearTimerCntrlInterval() {
     if (timerCntrlInterval) clearInterval(timerCntrlInterval);
 
-    // timerCntrl.innerText = "ticking";
     timerCntrl.classList.add("deactive");
     buttonCntrl.classList.remove("deactive");
   }
